@@ -1,0 +1,114 @@
+* {
+  box-sizing: border-box;
+  font-family: IBMPlexMono, sans-serif;
+}
+
+body {
+  margin: 0;
+
+  font-family: Inter, sans-serif;
+  font-size: $font-size-default;
+  font-weight: 400;
+  line-height: $line-height-default;
+
+  color: black;
+
+  span,
+  div {
+    font-feature-settings: 'liga' off;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  object-fit: cover;
+}
+
+a,
+input,
+textarea,
+button {
+  font-family: inherit;
+}
+
+#root{
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: top / cover no-repeat url('../assets/img/background/background.jpg');
+  width: 100vw;
+  height: 100vh;
+}
+
+.main_wrapper {
+  @include flex(column, center, flex-start, nowrap);
+  overflow-y: auto;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track{
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb{
+    background: $primary;
+    border-radius: 4px;
+  }
+}
+
+.page_wrapper {
+  @include container;
+  flex: 1 0;
+}
+
+.modal-root {
+  z-index: 100;
+
+  overflow: hidden;
+
+  .modal-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    height: 100%;
+
+    background: rgb(0 0 0 / 80%);
+  }
+
+  .modal-wrap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    padding: 50px 0;
+
+    overflow: auto;
+
+    width: 100%;
+
+    outline: 0;
+    @include flex(row, center, center);
+  }
+}

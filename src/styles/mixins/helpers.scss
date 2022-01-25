@@ -1,0 +1,68 @@
+@mixin font-face($font-family, $file-path, $weight: normal, $style: normal, $format: "woff") {
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+    font-display: swap;
+    @if $format == "woff" {
+      src: url("#{$file-path}.#{$format}") format($format);
+    } @else {
+      src: url("#{$file-path}.#{$format}") format("truetype");
+    }
+  }
+}
+
+@mixin flex($direction: row, $alignment: normal, $justification: normal, $wrap: wrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justification;
+  align-items: $alignment;
+  flex-wrap: $wrap;
+}
+
+@mixin grid($columns: repeat(2, 1fr), $rows: 1fr, $gap: 10px) {
+  display: grid;
+  grid-template-columns: $columns;
+  grid-auto-rows: $rows;
+  gap: $gap;
+}
+
+@mixin text-control($size: 15px, $height: 18px, $weight: 400) {
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $height;
+}
+
+@mixin text-common($point, $weight: 400) {
+  @if $point==ssm {
+  }
+  @if $point==sm {
+  }
+  @if $point==smd {
+  }
+  @if $point==md {
+  }
+  @if $point==slg {
+  }
+  @if $point==lg {
+  }
+  @if $point==xl {
+  }
+  @if $point==xxl {
+  }
+  font-weight: $weight;
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+
+  max-width: 100%;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin container {
+  max-width: 1180px;
+  margin: 0 auto;
+}

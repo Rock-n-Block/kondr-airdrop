@@ -1,0 +1,16 @@
+@import '/src/styles/variables';
+@import '/src/styles/mixins/helpers.scss';
+
+.home_wrapper {
+    @include flex(column, center, flex-start, nowrap);
+    height: 100%;
+    .title{
+        margin-top: 6.25rem;
+        font-size: 4.5rem;
+        color: $font-color;
+        letter-spacing: 2px; 
+        font-weight: 600;
+        line-height: 5.875rem;
+        text-align: center;
+    }
+}

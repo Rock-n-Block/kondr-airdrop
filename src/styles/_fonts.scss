@@ -1,0 +1,4 @@
+@import 'mixins/helpers';
+// Example
+@include font-face('IBMPlexMono', '../assets/fonts/IBMPlexMono-Regular', 400, normal, 'ttf');
+@include font-face('IBMPlexMono', '../assets/fonts/IBMPlexMono-SemiBold', 600, normal, 'ttf');

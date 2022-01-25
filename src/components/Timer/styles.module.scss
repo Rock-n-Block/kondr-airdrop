@@ -1,0 +1,33 @@
+@import 'src/styles/mixins/helpers.scss';
+@import 'src/styles/variables';
+
+.wrapper{
+    .timer{
+        position: relative;
+        color: $font-color;
+        font-size: 9rem;
+        line-height: 11.75rem;
+        letter-spacing: .125rem;
+        .seconds,
+        .minuts,
+        .hours{
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+            position: absolute;
+            bottom: -1rem;
+        }
+
+        .hours{
+            left: 8%;
+        }
+
+        .minuts{
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .seconds{
+            right: 6%;
+        }
+    }
+}

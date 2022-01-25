@@ -1,0 +1,97 @@
+@import "/src/styles/variables";
+@import "/src/styles/mixins/helpers.scss";
+
+.wrapper {
+    border: 2px solid transparent;
+    border-radius: 4rem;
+    padding: 2rem 3rem;
+    position: relative;
+    font-size: 1.5rem;
+    line-height: 1;
+    top: 2rem;
+    cursor: pointer;
+    letter-spacing: 2px;
+
+    &.disabled{
+        cursor:not-allowed;
+        filter: grayscale(0.9);
+    }
+
+    .input {
+        width: 0;
+        height: 0;
+        appearance: none;
+        border: 0px solid transparent;
+        background: none;
+        color: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        position: absolute;
+
+        &.hidden {
+            opacity: 0;
+        }
+    }
+
+    .text{
+        color: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        @include ellipsis;
+
+        &.hidden {
+            opacity: 0;
+        }
+    }
+
+    svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &.white {
+        border-color: $primary;
+        color: $font-color;
+        transition: 0.4s ease;
+
+        &:hover {
+            border-color: $accent;
+            background: $accent;
+        }
+    }
+
+    &.purple {
+        background: $accent;
+        border-color: $accent;
+        color: $font-color;
+        transition: 0.4s ease;
+
+        &:hover {
+            border-color: $primary;
+            background: $primary;
+            color: $accent;
+        }
+    }
+
+    &.black {
+        background: transparent;
+        border-color: $black;
+        color: $black;
+        transition: 0.4s ease;
+
+        &:hover{
+            background: $black;
+            color: $font-color;
+        }
+    }
+}
+
+@media screen and (max-width: 800px){
+    .wrapper{
+        max-width: 100%;
+    }
+}

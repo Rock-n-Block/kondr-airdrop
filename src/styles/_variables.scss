@@ -1,0 +1,20 @@
+$breakpoints: (
+  xs: 576px,
+  sm: 768px,
+  md: 992px,
+  lg: 1200px,
+);
+
+$primary: rgba(255, 255, 255, 1);
+$accent: rgba(234, 51, 247, 1);
+$black: rgba(51, 51, 51, 1);
+$font-color: $primary;
+
+// Mobile first
+$mediaWidthLaptop: 1440px;
+$mediaWidthDesktop: 1024px;
+$mediaWidthTablet: 768px;
+$mediaWidthMobile: 550px;
+
+$font-size-default: 15px;
+$line-height-default: 18px;
