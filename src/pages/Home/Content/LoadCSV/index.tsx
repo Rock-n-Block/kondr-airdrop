@@ -155,13 +155,18 @@ const LoadCSV: VFC = () => {
       const addresses = files.map((line) => line.address);
       const tokens = files.map((line) => line.amount);
       const freezeTime = files.map((line) => line.data);
-      await approveFreeze(addresses, tokens, freezeTime);
+      try {
+        await approveFreeze(addresses, tokens, freezeTime);
+      } catch {
+        dispatch(setIsLoading(false));
+      }
+
       setLoadingFreeze(false);
       dispatch(setState(1));
       dispatch(setFile(null));
       dispatch(setFiles([]));
     }
-  }, [approveFreeze, dispatch, files, setFile, setFiles, setState]);
+  }, [approveFreeze, dispatch, files, setFile, setFiles, setIsLoading, setState]);
 
   const onProceed = useCallback(() => {
     ReadFile();

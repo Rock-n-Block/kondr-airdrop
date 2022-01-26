@@ -85,7 +85,7 @@ const Contract: FC = ({ children }) => {
           const normAddresses = addresses;
           const normTokens = tokens.map((token: string) => deNormalizedValue(token));
           const normFreeze = freezeTime.map((time) => new Date(time).getTime() / 1000);
-          const res = await airContract.methods
+          await airContract.methods
             .multiFreezeToken(
               contracts.params.TOKEN[contracts.type].address,
               normAddresses,
@@ -94,7 +94,6 @@ const Contract: FC = ({ children }) => {
               deNormalizedValue(amount),
             )
             .send({ from: address });
-          console.log(res);
           openModal({
             type: 'success',
             title: `Your tokens have been successfully distributed`,
@@ -102,10 +101,7 @@ const Contract: FC = ({ children }) => {
           });
         } else {
           const approved = await tokenContract.methods
-            .approve(
-              contracts.params.AIRDROP[contracts.type].address,
-              deNormalizedValue(amount - allowanced),
-            )
+            .approve(contracts.params.AIRDROP[contracts.type].address, deNormalizedValue(amount))
             .send({ from: address });
           if (approved) {
             checkAllowance();
