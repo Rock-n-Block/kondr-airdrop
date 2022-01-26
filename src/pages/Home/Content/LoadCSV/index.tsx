@@ -48,8 +48,8 @@ const LoadCSV: VFC = () => {
               }
               const [month, day, year] = data.replaceAll('/', '.').replaceAll(',', '.').split('.');
               if (
-                new Date(+year, +month, +day).getTime() < Date.now() ||
-                Number.isNaN(new Date(+year, +month, +day)) ||
+                new Date(+year, +month > 0 ? +month - 1 : 0, +day).getTime() < Date.now() ||
+                Number.isNaN(new Date(+year, +month > 0 ? +month - 1 : 0, +day)) ||
                 !day ||
                 !month ||
                 !year
