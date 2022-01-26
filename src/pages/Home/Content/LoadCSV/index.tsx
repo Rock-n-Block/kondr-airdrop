@@ -151,7 +151,8 @@ const LoadCSV: VFC = () => {
       setLoadingFreeze(true);
       const addresses = files.map((line) => line.address);
       const tokens = files.map((line) => line.amount);
-      const freezeTime = files.map((line) => line.data);
+      const freezeTime = files.map((line) => line.data.replace('\r', ''));
+      console.log(addresses, tokens, freezeTime);
       try {
         await approveFreeze(addresses, tokens, freezeTime);
       } catch {

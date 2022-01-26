@@ -22,6 +22,7 @@ const Collect: VFC = () => {
     const result = { balance: 0, release: 0 };
     const minimal = [...freeze].sort((f, sec) => f.release - sec.release);
     const prev = freeze.filter((val) => val.release < 0);
+    console.log(minimal);
     result.balance = prev.reduce((acc, val) => acc + +val.balance, 0);
     if (minimal.length > 0 && minimal[0].release > 0 && prev.length !== 0) {
       return result;
