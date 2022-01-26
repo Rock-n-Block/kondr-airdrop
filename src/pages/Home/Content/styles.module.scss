@@ -2,10 +2,10 @@
 @import '/src/styles/variables';
 
 .wrapper{
-    width: 100%;
     @include flex(column, center, space-evenly, nowrap);
     gap: 2rem;
     margin-bottom: 4rem;
+    width: 100%;
 
     .sample{
         margin-top: 3rem;
@@ -31,6 +31,13 @@
 .claim{
     margin-top: -2rem;
     width: max-content;
+}
+
+.btns{
+    @include flex(column, center, center, nowrap);
+    & > * {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 800px){

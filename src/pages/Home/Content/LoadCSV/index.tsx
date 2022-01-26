@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState, VFC } from 'react';
+import { FormEvent, useCallback, useEffect, useState, VFC } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
 import { FileSlice } from 'store/reducers/files';
@@ -152,7 +152,6 @@ const LoadCSV: VFC = () => {
       const addresses = files.map((line) => line.address);
       const tokens = files.map((line) => line.amount);
       const freezeTime = files.map((line) => line.data.replace('\r', ''));
-      console.log(addresses, tokens, freezeTime);
       try {
         await approveFreeze(addresses, tokens, freezeTime);
       } catch {
@@ -174,6 +173,12 @@ const LoadCSV: VFC = () => {
     dispatch(setFile(new File([csvFile], 'sample.csv')));
     dispatch(setState(2));
   }, [dispatch, setFile, setState]);
+
+  useEffect(() => {
+    if (files && files?.length === 0) {
+      dispatch(setState(1));
+    }
+  }, [dispatch, files, setState]);
 
   return (
     <div className={s.wrapper}>

@@ -2,6 +2,8 @@
 @import "/src/styles/mixins/helpers.scss";
 
 .wrapper {
+    min-width: 340px;
+    text-align: center;
     border: 2px solid transparent;
     border-radius: 4rem;
     padding: 2rem 3rem;

@@ -70,11 +70,16 @@
         .paginator{
             flex: 0 0 50%;
         }
+
+        .bal{
+            text-align: end;
+            line-height: 1.2;
+        }
     }
 
     .balance{
         color: $font-color;
-        font-size: 24px;
+        font-size: 18px;
         letter-spacing: 2px;
 
         &.low{

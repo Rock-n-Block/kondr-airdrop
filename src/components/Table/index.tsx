@@ -111,7 +111,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
         {balance && total && (
           <div className={s.bal}>
             <span className={`${s.balance} ${+balance < total && s.low}`}>
-              Balance/Total: {formatNumber(balance)}/{formatNumber(total.toString())}
+              Balance/Total {formatNumber(balance)}/{formatNumber(total.toString())}
             </span>
           </div>
         )}
