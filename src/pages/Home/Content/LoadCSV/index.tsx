@@ -160,13 +160,9 @@ const LoadCSV: VFC = () => {
       } catch {
         dispatch(setIsLoading(false));
       }
-
       setLoadingFreeze(false);
-      dispatch(setState(1));
-      dispatch(setFile(null));
-      dispatch(setFiles([]));
     }
-  }, [approveFreeze, dispatch, files, setFile, setFiles, setIsLoading, setState]);
+  }, [approveFreeze, dispatch, files, setIsLoading]);
 
   const onProceed = useCallback(() => {
     ReadFile();
