@@ -10,7 +10,7 @@ const App: FC = () => {
   const { openModal, closeAll } = useModals();
 
   useEffect(() => {
-    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    if (!window.ethereum) {
       openModal({
         type: 'error',
         title: `Metamask extension not found. Please use Metamask compatible browser like Google Chrome.`,
