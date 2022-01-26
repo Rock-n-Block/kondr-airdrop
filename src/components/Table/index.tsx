@@ -69,13 +69,13 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {paginData?.map((line, key) => (
-            <tr key={line.address + key.toString()}>
+          {paginData?.map((line) => (
+            <tr key={line.idx}>
               <td>{line.address}</td>
               <td>{line.data}</td>
               <td>{line.amount}</td>
               <td className={s.removeCell}>
-                <button className={s.remove} type="button" onClick={() => onDelete(key)}>
+                <button className={s.remove} type="button" onClick={() => onDelete(line.idx)}>
                   remove
                 </button>
               </td>

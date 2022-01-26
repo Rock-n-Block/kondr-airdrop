@@ -6,7 +6,7 @@ import { StateSlice } from 'store/reducers/state';
 import { UserSlice } from 'store/reducers/user';
 
 import { contracts } from 'config';
-import { deNormalizedValue, normalizedValue } from 'utils';
+import { deNormalizedValue, logger, normalizedValue } from 'utils';
 
 import ContractService from 'services/ContractService';
 import { useModals } from 'services/ModalsContext';
@@ -80,7 +80,8 @@ const Contract: FC = ({ children }) => {
         const allowanced = await tokenContract.methods
           .allowance(address, contracts.params.AIRDROP[contracts.type].address)
           .call((allow: string) => normalizedValue(allow));
-        if (allowanced >= amount) {
+        logger('is allowance more than amount', +allowanced >= amount);
+        if (+allowanced >= amount) {
           const normAddresses = addresses;
           const normTokens = tokens.map((token: string) => deNormalizedValue(token));
           const normFreeze = freezeTime.map((time) => new Date(time).getTime() / 1000);
@@ -100,7 +101,10 @@ const Contract: FC = ({ children }) => {
           });
         } else {
           const approved = await tokenContract.methods
-            .approve(contracts.params.AIRDROP[contracts.type].address, deNormalizedValue(amount))
+            .approve(
+              contracts.params.AIRDROP[contracts.type].address,
+              deNormalizedValue(amount - allowanced),
+            )
             .send({ from: address });
           if (approved) {
             checkAllowance();

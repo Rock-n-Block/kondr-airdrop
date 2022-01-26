@@ -5,6 +5,7 @@ import { FileSlice } from 'store/reducers/files';
 import { StateSlice } from 'store/reducers/state';
 
 import { Button, Table } from 'components';
+import { logger } from 'utils';
 
 import { useContractContext } from 'services/ContractContext';
 import { useModals } from 'services/ModalsContext';
@@ -34,7 +35,7 @@ const LoadCSV: VFC = () => {
       dispatch(setIsLoading(true));
       const fileReader = new FileReader();
       fileReader.onload = async function () {
-        getBalance().then((bal) => {
+        await getBalance().then((bal) => {
           const readResult = fileReader.result as string;
           const lines = readResult.split('\n');
           const CSVData: CSVLine[] = [];
@@ -42,7 +43,7 @@ const LoadCSV: VFC = () => {
             if (line.length > 0) {
               const [address, data, amount] = line.replaceAll('"', '').split(',');
               if (!web3utils.checkAddressChecksum(address)) {
-                err.push(`error address at line ${key}`);
+                err.push(`error address at line ${key + 1}`);
                 return;
               }
               const [month, day, year] = data.replaceAll('/', '.').replaceAll(',', '.').split('.');
@@ -53,14 +54,18 @@ const LoadCSV: VFC = () => {
                 !month ||
                 !year
               ) {
-                err.push(`error data at line ${key}`);
+                err.push(`error date at line ${key + 1}`);
+                return;
+              }
+              if (Number.isNaN(parseFloat(amount))) {
+                err.push(`error amount at line ${key + 1}`);
                 return;
               }
               const idx = CSVData.findIndex(
                 (value) => value.address === address && value.data === data,
               );
               if (idx === -1) {
-                CSVData.push({ address, data, amount });
+                CSVData.push({ address, data, amount, idx: key });
               } else {
                 CSVData[idx] = {
                   ...CSVData[idx],
@@ -74,6 +79,20 @@ const LoadCSV: VFC = () => {
             openModal({
               type: 'error',
               title: `You don't have enough currency, please edit the table`,
+              onClick: closeAll,
+            });
+          }
+          logger('errors', err);
+          logger(
+            'table',
+            CSVData.map((val) => `${val.address} ${val.data} ${val.amount}\n`),
+          );
+          if (CSVData.length > 0) {
+            dispatch(setState(3));
+          } else {
+            openModal({
+              type: 'error',
+              title: `Uploaded file is incorrect. Please make sure it corresponds with the Sample file.`,
               onClick: closeAll,
             });
           }
@@ -95,6 +114,7 @@ const LoadCSV: VFC = () => {
     setError,
     setFiles,
     setIsLoading,
+    setState,
     web3utils,
   ]);
 
@@ -119,7 +139,10 @@ const LoadCSV: VFC = () => {
     (id: number) => {
       const newData = files && [...files];
       if (newData) {
-        newData.splice(id, 1);
+        newData.splice(
+          newData.findIndex((val) => val.idx === id),
+          1,
+        );
         dispatch(setFiles(newData));
       }
     },
@@ -141,8 +164,8 @@ const LoadCSV: VFC = () => {
   }, [approveFreeze, dispatch, files, setFile, setFiles, setState]);
 
   const onProceed = useCallback(() => {
-    ReadFile().then((status) => status && dispatch(setState(3)));
-  }, [ReadFile, dispatch, setState]);
+    ReadFile();
+  }, [ReadFile]);
 
   const onSample = useCallback(async () => {
     const csvExampleText = await fetch('/src/assets/files/sample.csv')

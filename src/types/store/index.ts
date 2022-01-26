@@ -11,6 +11,7 @@ export type CSVLine = {
   address: string;
   data: string;
   amount: string;
+  idx: number;
 };
 
 export interface FileState {
