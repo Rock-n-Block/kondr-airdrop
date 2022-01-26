@@ -64,7 +64,12 @@
 
     .pagination{
         @include flex(row, center, space-between, nowrap);
+        gap: 10px;
         width: 100%;
+        .bal,
+        .paginator{
+            flex: 0 0 50%;
+        }
     }
 
     .balance{
@@ -74,6 +79,16 @@
 
         &.low{
             color: rgba(247, 99, 87, 1);
+        }
+    }
+}
+
+@media (max-width: 800px) {
+    .wrapper{
+        &.tableWrap{
+            max-width: 600px;
+            overflow-y: hidden;
+            overflow-x: auto;
         }
     }
 }

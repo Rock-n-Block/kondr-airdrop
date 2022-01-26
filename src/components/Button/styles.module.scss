@@ -93,5 +93,10 @@
 @media screen and (max-width: 800px){
     .wrapper{
         max-width: 100%;
+        font-size: 1.2rem;
+        .text{
+            max-width: 200px;
+            display: inline-block;
+        }
     }
 }

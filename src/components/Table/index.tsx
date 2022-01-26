@@ -58,7 +58,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
   }, [currentPage, data]);
 
   return (
-    <div className={s.wrapper}>
+    <div className={`${s.wrapper} ${s.tableWrap}`}>
       <table className={s.table}>
         <thead>
           <tr>
@@ -84,7 +84,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
         </tbody>
       </table>
       <div className={s.pagination}>
-        <div>
+        <div className={s.paginator}>
           <button className={s.pagin} type="button" onClick={onPrevClick}>
             {' '}
             {'<'}{' '}
@@ -109,7 +109,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
           </button>
         </div>
         {balance && total && (
-          <div>
+          <div className={s.bal}>
             <span className={`${s.balance} ${+balance < total && s.low}`}>
               Balance/Total: {formatNumber(balance)}/{formatNumber(total.toString())}
             </span>

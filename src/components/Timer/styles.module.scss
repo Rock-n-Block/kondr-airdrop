@@ -2,6 +2,15 @@
 @import 'src/styles/variables';
 
 .wrapper{
+    margin-top: 2rem;
+    @include flex(column, center, center, nowrap);
+
+    .next{
+        font-size: 28px;
+        color: $font-color;
+        letter-spacing: 2px;
+    }
+
     .timer{
         position: relative;
         color: $font-color;
@@ -28,6 +37,25 @@
 
         .seconds{
             right: 6%;
+        }
+    }
+}
+
+@media screen and (max-width: 800px){
+    .wrapper{
+        .next{
+            font-size: 16px;
+        }
+        .timer{
+            font-size: 4rem;
+
+            .hours{
+                left: 3%;
+            }
+
+            .seconds{
+                right: 0%;
+            }
         }
     }
 }

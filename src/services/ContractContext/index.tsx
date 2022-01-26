@@ -83,7 +83,7 @@ const Contract: FC = ({ children }) => {
         if (allowanced >= amount) {
           const normAddresses = addresses;
           const normTokens = tokens.map((token: string) => deNormalizedValue(token));
-          const normFreeze = freezeTime.map((time) => new Date(time).getTime());
+          const normFreeze = freezeTime.map((time) => new Date(time).getTime() / 1000);
           await airContract.methods
             .multiFreezeToken(
               contracts.params.TOKEN[contracts.type].address,
@@ -107,7 +107,6 @@ const Contract: FC = ({ children }) => {
           }
         }
       };
-
       await checkAllowance();
     },
     [address, airContract.methods, closeAll, openModal, tokenContract.methods],
@@ -125,7 +124,7 @@ const Contract: FC = ({ children }) => {
           dispatch(
             setFreeze({
               balance: normalizedValue(freezeElement[1]).toString(),
-              release: +freezeElement[0] - Date.now(),
+              release: +freezeElement[0] - Date.now() / 1000,
             }),
           );
         };
@@ -141,12 +140,14 @@ const Contract: FC = ({ children }) => {
   const claimTokens = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (amount: string) => {
-      await tokenContract.methods.releaseAll().send({ from: address });
-      openModal({
-        type: 'success',
-        title: `Great! You successfully received your tokens.`,
-        onClick: closeAll,
-      });
+      const res = await tokenContract.methods.releaseAll().send({ from: address });
+      if ('Released' in res.events) {
+        openModal({
+          type: 'success',
+          title: `Great! You successfully received your tokens.`,
+          onClick: closeAll,
+        });
+      }
       dispatch(setState(1));
     },
     [address, closeAll, dispatch, openModal, setState, tokenContract.methods],

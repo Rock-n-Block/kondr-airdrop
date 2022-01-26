@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, VFC } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
+import { FreezeSlice } from 'store/reducers/freeze';
+import { StateSlice } from 'store/reducers/state';
 
 import { Button, Timer } from 'components';
 
@@ -9,8 +11,6 @@ import { useContractContext } from 'services/ContractContext';
 import { Connection } from '..';
 
 import s from '../styles.module.scss';
-import { StateSlice } from 'store/reducers/state';
-import { FreezeSlice } from 'store/reducers/freeze';
 
 const Collect: VFC = () => {
   const { freeze } = useTypedSelector((state) => state.FreezeReducer);
@@ -20,14 +20,14 @@ const Collect: VFC = () => {
   const {setCollect} = FreezeSlice.actions;
   const collectData = useMemo(() => {
     const result = { balance: 0, release: 0 };
-    const minimal = freeze.sort((f,sec) => f.release - sec.release)[0];
+    const minimal = freeze.sort((f,sec) => f.release - sec.release);
     const prev = freeze.filter((val) => val.release < 0);
     result.balance = prev.reduce((acc, val) => acc + +val.balance, 0);
-    if (minimal.release > 0 && prev.length !== 0) {
+    if (minimal && minimal[0].release > 0 && prev.length !== 0) {
       return result;
     }
-    if (minimal.release > 0 && prev.length === 0) {
-      return minimal;
+    if (minimal && minimal[0].release > 0 && prev.length === 0) {
+      return minimal[0];
     }
     return result;
   }, [freeze]);
@@ -54,7 +54,7 @@ const Collect: VFC = () => {
 
   return (
     <div className={s.wrapper}>
-      <Timer seconds={seconds} setSeconds={setSeconds}/>
+      <Timer seconds={seconds} setSeconds={setSeconds} amount={collectData.balance.toString()}/>
       <Connection />
       <Button
         id="claim"

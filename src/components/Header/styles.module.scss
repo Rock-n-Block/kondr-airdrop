@@ -6,7 +6,7 @@
     width: 100%;
 
     .body{
-        @include flex(row, center, space-between);
+        @include flex(row, center, space-between, nowrap);
         border-bottom: 1px solid $primary;
         padding: .625rem 0 .875rem;
 
@@ -30,6 +30,19 @@
             &:hover{
                 border-color: $accent;
                 background: $accent;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .wrapper{
+        .body{
+            @include flex(column, center, space-between, nowrap);
+            gap: 1.375rem;
+            border-bottom: 1px solid transparent;
+            .contact{
+                display: none;
             }
         }
     }
