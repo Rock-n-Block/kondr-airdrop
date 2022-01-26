@@ -72,7 +72,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
           {paginData?.map((line) => (
             <tr key={line.idx}>
               <td>{line.address}</td>
-              <td>{new Date(line.data * 1000).toLocaleDateString()}</td>
+              <td>{new Date(+line.data * 1000).toLocaleDateString()}</td>
               <td>{line.amount}</td>
               <td className={s.removeCell}>
                 <button className={s.remove} type="button" onClick={() => onDelete(line.idx)}>
