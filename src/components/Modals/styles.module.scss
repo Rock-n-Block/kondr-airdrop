@@ -25,10 +25,10 @@
         padding: 1rem 3rem;
         background: $primary;
         border-radius: .75rem;
-        @include flex(column, center, flex-start, nowrap);
+        @include flex(column, center, center, nowrap);
         gap: .875rem;
         position: relative;
-        min-height: 300px;
+        min-height: 350px;
         line-height: 1.5rem;
         font-size: 1.125rem;
 
@@ -54,7 +54,7 @@
 @media screen and (max-width: 800px){
     .background{
         .wrapper{
-            padding: 0 10px;
+            margin: 0 10px;
         }
     }
 }

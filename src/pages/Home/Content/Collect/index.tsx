@@ -16,17 +16,17 @@ const Collect: VFC = () => {
   const { freeze } = useTypedSelector((state) => state.FreezeReducer);
   const { claimTokens } = useContractContext();
   const dispatch = useTypedDispatch();
-  const {setState} = StateSlice.actions;
-  const {setCollect} = FreezeSlice.actions;
+  const { setState } = StateSlice.actions;
+  const { setCollect } = FreezeSlice.actions;
   const collectData = useMemo(() => {
     const result = { balance: 0, release: 0 };
-    const minimal = freeze.sort((f,sec) => f.release - sec.release);
+    const minimal = freeze.sort((f, sec) => f.release - sec.release);
     const prev = freeze.filter((val) => val.release < 0);
     result.balance = prev.reduce((acc, val) => acc + +val.balance, 0);
-    if (minimal && minimal[0].release > 0 && prev.length !== 0) {
+    if (minimal.length && minimal[0].release > 0 && prev.length !== 0) {
       return result;
     }
-    if (minimal && minimal[0].release > 0 && prev.length === 0) {
+    if (minimal.length && minimal[0].release > 0 && prev.length === 0) {
       return minimal[0];
     }
     return result;
@@ -36,7 +36,7 @@ const Collect: VFC = () => {
     if (collectData.release <= 0) {
       dispatch(setState(2));
     }
-  }, [collectData.release, dispatch, setState])
+  }, [collectData.release, dispatch, setState]);
 
   useEffect(() => {
     dispatch(setCollect(collectData.balance.toString()));
@@ -54,7 +54,7 @@ const Collect: VFC = () => {
 
   return (
     <div className={s.wrapper}>
-      <Timer seconds={seconds} setSeconds={setSeconds} amount={collectData.balance.toString()}/>
+      <Timer seconds={seconds} setSeconds={setSeconds} amount={collectData.balance.toString()} />
       <Connection />
       <Button
         id="claim"

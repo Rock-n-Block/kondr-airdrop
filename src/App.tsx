@@ -17,7 +17,8 @@ const App: FC = () => {
         onClick: closeAll,
       });
     }
-  }, [closeAll, openModal]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="main_wrapper">

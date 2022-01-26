@@ -42,7 +42,7 @@ const Connect: FC = ({ children }) => {
     dispatch(setAddress(''));
     dispatch(setBalance('0'));
     dispatch(setIsOwner(false));
-    dispatch(setState(1));
+    dispatch(setState(0));
   }, [dispatch]);
 
   const getUserData = useCallback(
@@ -61,7 +61,7 @@ const Connect: FC = ({ children }) => {
             title: `Sorry but your address is not eligible for the airdrop. Please try using another address!`,
             onClick: closeAll,
           });
-          dispatch(setState(0));
+          disconnect();
         } else {
           dispatch(setState(1));
         }
