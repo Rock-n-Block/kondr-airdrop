@@ -86,7 +86,7 @@ const Contract: FC = ({ children }) => {
         if (+allowanced >= +deNormalizedValue(amount)) {
           const normAddresses = addresses;
           const normTokens = tokens.map((token: string) => deNormalizedValue(token));
-          const normFreeze = freezeTime.map((time) => new Date(time).getTime() / 1000);
+          const normFreeze = freezeTime;
           const res = await airContract.methods
             .multiFreezeToken(
               contracts.params.TOKEN[contracts.type].address,

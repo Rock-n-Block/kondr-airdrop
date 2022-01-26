@@ -41,18 +41,15 @@ const LoadCSV: VFC = () => {
           const CSVData: CSVLine[] = [];
           lines.forEach((line, key) => {
             if (line.length > 0) {
-              const [address, data, amount] = line.replaceAll('"', '').split(',');
+              const [address, amount, data] = line.replaceAll('"', '').split(',');
               if (!web3utils.checkAddressChecksum(address)) {
                 err.push(`error address at line ${key + 1}`);
                 return;
               }
-              const [month, day, year] = data.replaceAll('/', '.').replaceAll(',', '.').split('.');
               if (
-                new Date(+year, +month > 0 ? +month - 1 : 0, +day).getTime() < Date.now() ||
-                Number.isNaN(new Date(+year, +month > 0 ? +month - 1 : 0, +day)) ||
-                !day ||
-                !month ||
-                !year
+                Number.isNaN(parseInt(data, 10)) ||
+                new Date(parseInt(data, 10) * 1000).getTime() < Date.now() ||
+                Number.isNaN(new Date(parseInt(data, 10) * 1000))
               ) {
                 err.push(`error date at line ${key + 1}`);
                 return;
@@ -85,7 +82,7 @@ const LoadCSV: VFC = () => {
           logger('errors', err);
           logger(
             'table',
-            CSVData.map((val) => `${val.address} ${val.data} ${val.amount}\n`),
+            CSVData.map((val) => `${val.address} ${new Date(val.data)} ${val.amount}\n`),
           );
           if (CSVData.length > 0) {
             dispatch(setState(3));
