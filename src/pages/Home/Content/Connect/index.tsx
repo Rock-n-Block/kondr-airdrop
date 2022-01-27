@@ -10,16 +10,12 @@ import { chainsEnum } from 'types';
 import s from '../styles.module.scss';
 
 const Connection: VFC = () => {
-  const { connect, disconnect } = useWalletConnectorContext();
+  const { connect } = useWalletConnectorContext();
   const { address, isLoading } = useTypedSelector((state) => state.UserReducer);
 
   const onConnectClick = useCallback(() => {
-    if (address && address.length > 0) {
-      disconnect();
-    } else {
-      connect(chainsEnum.Ethereum, 'MetaMask');
-    }
-  }, [address, connect, disconnect]);
+    if (address && address.length === 0) connect(chainsEnum.Ethereum, 'MetaMask');
+  }, [address, connect]);
 
   return (
     <div className={s.wrapper}>

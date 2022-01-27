@@ -12,6 +12,7 @@ import { deNormalizedValue, logger, normalizedValue } from 'utils';
 import ContractService from 'services/ContractService';
 import { useModals } from 'services/ModalsContext';
 import { IContractContext } from 'types';
+import { useWalletConnectorContext } from 'services/WalletConnect';
 
 const ContractContext = createContext<IContractContext>({} as IContractContext);
 
@@ -20,6 +21,7 @@ const cService = ContractService;
 const Contract: FC = ({ children }) => {
   const dispatch = useTypedDispatch();
 
+  const {disconnect} = useWalletConnectorContext();
   const { openModal, closeAll } = useModals();
 
   const { address } = useTypedSelector((state) => state.UserReducer);
@@ -166,9 +168,10 @@ const Contract: FC = ({ children }) => {
           onClick: closeAll,
         });
       }
-      dispatch(setState(1));
+      dispatch(setState(0));
+      disconnect();
     },
-    [address, closeAll, dispatch, openModal, setState, tokenContract.methods],
+    [address, closeAll, disconnect, dispatch, openModal, setState, tokenContract.methods],
   );
 
   const ContractValues = useMemo(
