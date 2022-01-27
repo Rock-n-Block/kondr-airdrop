@@ -49,14 +49,21 @@
             border-bottom: 1px solid $primary;
             tr{
                 td{
-                    padding-bottom: 1.5625rem;
+                    padding: 0 .625rem 1.5625rem;
                 }
             }
         }
         tbody{
             tr{
                 td{
-                    padding: 1.25rem 0;
+                    padding: 1.25rem .625rem;
+
+                    &.address{
+                        @include ellipsis;
+                        @media (max-width: 541px){
+                            max-width: 200px;
+                        }
+                    }
                 }
             }
         }
@@ -66,6 +73,10 @@
         @include flex(row, center, space-between, nowrap);
         gap: 10px;
         width: 100%;
+        @media (max-width: 541px){
+            @include flex(column, center, flex-start, nowrap);
+            padding-bottom: 1.25rem;
+        }
         .bal,
         .paginator{
             flex: 0 0 50%;
@@ -91,9 +102,20 @@
 @media (max-width: 800px) {
     .wrapper{
         &.tableWrap{
-            max-width: 600px;
+            max-width: 100%;
             overflow-y: hidden;
             overflow-x: auto;
+        }
+    }
+}
+
+@media (max-width: 541px) {
+    .wrapper{
+        &.tableWrap{
+            align-items: flex-start;
+        }
+        .balance{
+            font-size: 14px;
         }
     }
 }

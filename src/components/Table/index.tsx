@@ -71,7 +71,7 @@ const Table: VFC<ITable> = ({ data, onDelete }) => {
         <tbody>
           {paginData?.map((line) => (
             <tr key={line.idx}>
-              <td>{line.address}</td>
+              <td className={s.address}>{line.address}</td>
               <td>{new Date(+line.data * 1000).toLocaleDateString()}</td>
               <td>{line.amount}</td>
               <td className={s.removeCell}>

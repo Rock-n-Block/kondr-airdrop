@@ -177,8 +177,10 @@ const LoadCSV: VFC = () => {
   useEffect(() => {
     if (files && files?.length === 0) {
       dispatch(setState(1));
+      dispatch(setFile(null));
+      dispatch(setFiles([]));
     }
-  }, [dispatch, files, setState]);
+  }, [dispatch, files, setFile, setFiles, setState]);
 
   return (
     <div className={s.wrapper}>

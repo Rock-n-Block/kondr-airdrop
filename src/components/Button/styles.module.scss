@@ -14,8 +14,8 @@
     cursor: pointer;
     letter-spacing: 2px;
 
-    &.disabled{
-        cursor:not-allowed;
+    &.disabled {
+        cursor: not-allowed;
         filter: grayscale(0.9);
     }
 
@@ -36,7 +36,7 @@
         }
     }
 
-    .text{
+    .text {
         color: inherit;
         font-size: inherit;
         line-height: inherit;
@@ -61,8 +61,10 @@
         transition: 0.4s ease;
 
         &:hover {
-            border-color: $accent;
-            background: $accent;
+            @media (min-width: 768px) {
+                border-color: $accent;
+                background: $accent;
+            }
         }
     }
 
@@ -73,9 +75,11 @@
         transition: 0.4s ease;
 
         &:hover {
-            border-color: $primary;
-            background: $primary;
-            color: $accent;
+            @media (min-width: 768px) {
+                border-color: $primary;
+                background: $primary;
+                color: $accent;
+            }
         }
     }
 
@@ -85,18 +89,20 @@
         color: $black;
         transition: 0.4s ease;
 
-        &:hover{
-            background: $black;
-            color: $font-color;
+        &:hover {
+            @media (min-width: 768px) {
+                background: $black;
+                color: $font-color;
+            }
         }
     }
 }
 
-@media screen and (max-width: 800px){
-    .wrapper{
+@media screen and (max-width: 800px) {
+    .wrapper {
         max-width: 100%;
         font-size: 1.2rem;
-        .text{
+        .text {
             max-width: 200px;
             display: inline-block;
         }
