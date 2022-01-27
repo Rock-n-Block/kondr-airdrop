@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useState, VFC } from 'react';
+import { FormEvent, useCallback, useState, VFC } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
 import { FileSlice } from 'store/reducers/files';
@@ -82,7 +82,7 @@ const LoadCSV: VFC = () => {
           logger('errors', err);
           logger(
             'table',
-            CSVData.map((val) => `${val.address} ${new Date(val.data)} ${val.amount}\n`),
+            CSVData.map((val) => `${val.address} ${new Date(+val.data*1000)} ${val.amount}\n`),
           );
           if (CSVData.length > 0) {
             dispatch(setState(3));
@@ -140,10 +140,16 @@ const LoadCSV: VFC = () => {
           newData.findIndex((val) => val.idx === id),
           1,
         );
-        dispatch(setFiles(newData));
+        if (newData.length === 0) {
+          dispatch(setState(1));
+          dispatch(setFile(null));
+          dispatch(setFiles([]));
+        } else {
+          dispatch(setFiles(newData));
+        }
       }
     },
-    [dispatch, files, setFiles],
+    [dispatch, files, setFile, setFiles, setState],
   );
 
   const onApprove = useCallback(async () => {
@@ -173,14 +179,6 @@ const LoadCSV: VFC = () => {
     dispatch(setFile(new File([csvFile], 'sample.csv')));
     dispatch(setState(2));
   }, [dispatch, setFile, setState]);
-
-  useEffect(() => {
-    if (files && files?.length === 0) {
-      dispatch(setState(1));
-      dispatch(setFile(null));
-      dispatch(setFiles([]));
-    }
-  }, [dispatch, files, setFile, setFiles, setState]);
 
   return (
     <div className={s.wrapper}>
