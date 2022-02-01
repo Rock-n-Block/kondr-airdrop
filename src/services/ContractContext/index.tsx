@@ -12,7 +12,6 @@ import { deNormalizedValue, logger, normalizedValue } from 'utils';
 import ContractService from 'services/ContractService';
 import { useModals } from 'services/ModalsContext';
 import { IContractContext } from 'types';
-import { useWalletConnectorContext } from 'services/WalletConnect';
 
 const ContractContext = createContext<IContractContext>({} as IContractContext);
 
@@ -21,13 +20,12 @@ const cService = ContractService;
 const Contract: FC = ({ children }) => {
   const dispatch = useTypedDispatch();
 
-  const {disconnect} = useWalletConnectorContext();
   const { openModal, closeAll } = useModals();
 
   const { address } = useTypedSelector((state) => state.UserReducer);
   const { setFile, setFiles } = FileSlice.actions;
   const { setFreeze } = FreezeSlice.actions;
-  const { setBalance, setIsOwner } = UserSlice.actions;
+  const { setBalance, setIsOwner, setAddress } = UserSlice.actions;
   const { setState } = StateSlice.actions;
   const [tokenContract, setTokenContract] = useState(
     cService.getContract(
@@ -159,7 +157,7 @@ const Contract: FC = ({ children }) => {
 
   const claimTokens = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (amount: string) => {
+    async () => {
       const res = await tokenContract.methods.releaseAll().send({ from: address });
       if ('Released' in res.events) {
         openModal({
@@ -167,11 +165,18 @@ const Contract: FC = ({ children }) => {
           title: `Great! You successfully received your tokens.`,
           onClick: closeAll,
         });
+        dispatch(setState(0));
+        dispatch(setAddress(''));
+        dispatch(setBalance('0'));
+        dispatch(setIsOwner(false));
+      } else {
+        openModal({
+          type: 'error',
+          title: `Receiving error! Please try again later`,
+        });
       }
-      dispatch(setState(0));
-      disconnect();
     },
-    [address, closeAll, disconnect, dispatch, openModal, setState, tokenContract.methods],
+    [address, closeAll, dispatch, openModal, setAddress, setBalance, setIsOwner, setState, tokenContract.methods],
   );
 
   const ContractValues = useMemo(
