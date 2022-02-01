@@ -196,7 +196,7 @@ const LoadCSV: VFC = () => {
       });
     }
     const csvExampleText = csvData.reduce(
-      (acc, value) => `${acc}${value[0]},${value[1]},${value[2]}\n`,
+      (acc, value) => `${acc}${value[0]},${value[1]},${Math.ceil(value[2])}\n`,
       '',
     );
     logger('Generated Data', csvExampleText);
