@@ -11,6 +11,7 @@ import { useContractContext } from 'services/ContractContext';
 import { Connection } from '..';
 
 import s from '../styles.module.scss';
+import { logger } from 'utils';
 
 const Collect: VFC = () => {
   const { freeze } = useTypedSelector((state) => state.FreezeReducer);
@@ -29,6 +30,7 @@ const Collect: VFC = () => {
     if (minimal.length > 0 && minimal[0].release > 0 && prev.length === 0) {
       return minimal[0];
     }
+    logger('collect Data', collectData);
     return result;
   }, [freeze]);
 
