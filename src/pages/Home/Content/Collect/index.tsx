@@ -33,10 +33,12 @@ const Collect: VFC = () => {
   }, [freeze]);
 
   useEffect(() => {
-    if (collectData.release <= 0) {
+    if (collectData.release <= 0 && +collectData.balance > 0) {
       dispatch(setState(2));
+    } else {
+      dispatch(setState(1));
     }
-  }, [collectData.release, dispatch, setState]);
+  }, [collectData.balance, collectData.release, dispatch, setState]);
 
   useEffect(() => {
     dispatch(setCollect(collectData.balance.toString()));

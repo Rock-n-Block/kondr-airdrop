@@ -29,7 +29,7 @@ const Connect: FC = ({ children }) => {
   const { setState } = StateSlice.actions;
   const { openModal, closeAll } = useModals();
 
-  const { getOwner, getFreezeTokens } = useContractContext();
+  const { getOwner, getFreezeTokens, getActualBalanceOf } = useContractContext();
 
   const provider = useRef<TWalletService>(WalletService);
   const [localProviderName, setLocalProviderName] = useLocalStorage(
@@ -49,12 +49,15 @@ const Connect: FC = ({ children }) => {
     async (providerName: string) => {
       const res = await provider.current.getAccount(address || '');
       if ('address' in res) {
-        const balance = await provider.current.getBalance(res.address);
+        const isOwn = await getOwner(res.address);
+        const balance = isOwn
+          ? await provider.current.getBalance(res.address)
+          : await getActualBalanceOf(res.address);
         dispatch(setAddress(res.address));
         dispatch(setBalance(balance.toString()));
         setLocalProviderName(providerName);
         const count = await getFreezeTokens(res.address);
-        const isOwn = await getOwner(res.address);
+
         if (!isOwn && +count === 0) {
           openModal({
             type: 'error',

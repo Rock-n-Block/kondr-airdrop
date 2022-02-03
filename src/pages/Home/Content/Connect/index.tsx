@@ -14,7 +14,11 @@ const Connection: VFC = () => {
   const { address, isLoading } = useTypedSelector((state) => state.UserReducer);
 
   const onConnectClick = useCallback(() => {
-    if (!address) connect(chainsEnum.Ethereum, 'MetaMask');
+    if (!address) {
+      connect(chainsEnum.Ethereum, 'MetaMask');
+    } else {
+      window.navigator.clipboard.writeText(address);
+    }
   }, [address, connect]);
 
   return (

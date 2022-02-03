@@ -60,12 +60,14 @@ const getContent = (isOwner: boolean, step: number) => {
 
 const Home: FC = () => {
   const { state } = useTypedSelector((st) => st.StateReducer);
-  const { isOwner } = useTypedSelector((st) => st.UserReducer);
+  const { isOwner, balance } = useTypedSelector((st) => st.UserReducer);
   const { collect } = useTypedSelector((st) => st.FreezeReducer);
 
   return (
     <div className={s.home_wrapper}>
-      <h1 className={s.title}>{getTitle(isOwner, state)('KON', collect)}</h1>
+      <h1 className={s.title}>
+        {getTitle(isOwner, state)('KON', state === 1 ? balance : collect)}
+      </h1>
       {getContent(isOwner, state)}
     </div>
   );

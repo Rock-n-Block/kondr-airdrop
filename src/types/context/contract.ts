@@ -6,5 +6,6 @@ export interface IContractContext {
   getBalance: () => Promise<string>;
   getOwner: any;
   getFreezeTokens: (addr: string) => Promise<any>;
+  getActualBalanceOf: (addr: string) => Promise<string>;
   web3utils: Utils;
 }

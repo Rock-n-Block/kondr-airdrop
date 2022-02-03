@@ -75,6 +75,18 @@ const Contract: FC = ({ children }) => {
     return balance;
   }, [address, dispatch, setBalance, tokenContract.methods]);
 
+  const getActualBalanceOf = useCallback(
+    async (addr: string) => {
+      const balance: string = await tokenContract.methods
+        .actualBalanceOf(addr)
+        .call()
+        .then((val: string) => normalizedValue(val));
+      dispatch(setBalance(balance));
+      return balance;
+    },
+    [dispatch, setBalance, tokenContract.methods],
+  );
+
   const approveFreeze = useCallback(
     async (addresses: string[], tokens: string[], freezeTime: string[]) => {
       const amount = tokens.map((val) => +val).reduce((acc, val) => acc + val, 0);
@@ -176,7 +188,17 @@ const Contract: FC = ({ children }) => {
         });
       }
     },
-    [address, closeAll, dispatch, openModal, setAddress, setBalance, setIsOwner, setState, tokenContract.methods],
+    [
+      address,
+      closeAll,
+      dispatch,
+      openModal,
+      setAddress,
+      setBalance,
+      setIsOwner,
+      setState,
+      tokenContract.methods,
+    ],
   );
 
   const ContractValues = useMemo(
@@ -186,9 +208,10 @@ const Contract: FC = ({ children }) => {
       approveFreeze,
       getBalance,
       getOwner,
+      getActualBalanceOf,
       web3utils: cService.getWeb3utils(),
     }),
-    [approveFreeze, claimTokens, getBalance, getFreezeTokens, getOwner],
+    [approveFreeze, claimTokens, getBalance, getFreezeTokens, getOwner, getActualBalanceOf],
   );
 
   return <ContractContext.Provider value={ContractValues}>{children}</ContractContext.Provider>;

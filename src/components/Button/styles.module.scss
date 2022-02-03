@@ -60,6 +60,12 @@
         color: $font-color;
         transition: 0.4s ease;
 
+        &.disabled{
+            border-color: $primary-disabled;
+            color: $primary-disabled;
+            opacity: 0.3;
+        }
+
         &:hover {
             @media (min-width: 768px) {
                 border-color: $accent;
