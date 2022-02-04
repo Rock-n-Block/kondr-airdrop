@@ -13,7 +13,7 @@ import { Connection } from '..';
 import s from '../styles.module.scss';
 
 const Collect: VFC = () => {
-  const { freeze } = useTypedSelector((state) => state.FreezeReducer);
+  const { freeze, isLoading } = useTypedSelector((state) => state.FreezeReducer);
   const { claimTokens } = useContractContext();
   const dispatch = useTypedDispatch();
   const { setState } = StateSlice.actions;
@@ -65,6 +65,7 @@ const Collect: VFC = () => {
           onClick={onClaimClick}
           theme={seconds !== 0 ? 'white' : 'purple'}
           disabled={seconds !== 0}
+          isLoading={isLoading}
           className={s.claim}
         />
       </div>

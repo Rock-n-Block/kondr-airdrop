@@ -24,7 +24,7 @@ const Contract: FC = ({ children }) => {
 
   const { address } = useTypedSelector((state) => state.UserReducer);
   const { setFile, setFiles } = FileSlice.actions;
-  const { setFreeze } = FreezeSlice.actions;
+  const { setFreeze, setIsLoading } = FreezeSlice.actions;
   const { setBalance, setIsOwner, setAddress } = UserSlice.actions;
   const { setState } = StateSlice.actions;
   const [tokenContract, setTokenContract] = useState(
@@ -170,6 +170,7 @@ const Contract: FC = ({ children }) => {
   const claimTokens = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async () => {
+      dispatch(setIsLoading(true));
       const res = await tokenContract.methods.releaseAll().send({ from: address });
       if ('Released' in res.events) {
         openModal({
@@ -187,6 +188,7 @@ const Contract: FC = ({ children }) => {
           title: `Receiving error! Please try again later`,
         });
       }
+      dispatch(setIsLoading(false));
     },
     [
       address,
@@ -195,6 +197,7 @@ const Contract: FC = ({ children }) => {
       openModal,
       setAddress,
       setBalance,
+      setIsLoading,
       setIsOwner,
       setState,
       tokenContract.methods,
