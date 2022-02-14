@@ -19,44 +19,43 @@ const Collect: VFC = () => {
   const { setState } = StateSlice.actions;
   const { setCollect } = FreezeSlice.actions;
   const collectData = useMemo(() => {
-    const result = { balance: 0, release: 0 };
-    const minimal = [...freeze].sort((f, sec) => f.release - sec.release);
-    const prev = freeze.filter((val) => val.release < 0);
-    result.balance = prev.reduce((acc, val) => acc + +val.balance, 0);
-    if (minimal.length > 0 && minimal[0].release > 0 && prev.length !== 0) {
-      return result;
-    }
-    if (minimal.length > 0 && minimal[0].release > 0 && prev.length === 0) {
-      return minimal[0];
-    }
-    return result;
+    const minimal = [...freeze].sort((f, sec) => +f.available_date - +sec.available_date)[0];
+    return freeze.filter((f) => f.available_date === minimal.available_date);
   }, [freeze]);
 
   useEffect(() => {
-    if (collectData.release <= 0 && +collectData.balance > 0) {
+    if (+collectData[0].available_date - Date.now() / 1000 <= 0) {
       dispatch(setState(2));
     } else {
       dispatch(setState(1));
     }
-  }, [collectData.balance, collectData.release, dispatch, setState]);
+  }, [collectData, dispatch, setState]);
 
   useEffect(() => {
-    dispatch(setCollect(collectData.balance.toString()));
-  }, [collectData.balance, dispatch, setCollect]);
+    dispatch(setCollect(collectData[0].amount));
+  }, [collectData, dispatch, setCollect]);
 
   const onClaimClick = useCallback(() => {
-    claimTokens(collectData.balance.toString());
-  }, [claimTokens, collectData.balance]);
+    claimTokens(collectData[0].amount, collectData[0].available_date, collectData[0].signature);
+  }, [claimTokens, collectData]);
 
-  const [seconds, setSeconds] = useState(collectData.release);
+  const [seconds, setSeconds] = useState(
+    +collectData[0].available_date - Date.now() > 0
+      ? +collectData[0].available_date - Date.now()
+      : 0,
+  );
 
   useEffect(() => {
-    setSeconds(collectData.release);
-  }, [collectData.release]);
+    setSeconds(
+      +collectData[0].available_date - Date.now() > 0
+        ? +collectData[0].available_date - Date.now()
+        : 0,
+    );
+  }, [collectData]);
 
   return (
     <div className={s.wrapper}>
-      <Timer seconds={seconds} setSeconds={setSeconds} amount={collectData.balance.toString()} />
+      <Timer seconds={seconds} setSeconds={setSeconds} amount={collectData[0].amount} />
       <div className={s.btns}>
         <Connection />
         <Button

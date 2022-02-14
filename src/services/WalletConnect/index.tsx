@@ -2,6 +2,7 @@
 import { createContext, FC, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
+import { FreezeSlice } from 'store/reducers/freeze';
 import { StateSlice } from 'store/reducers/state';
 import { UserSlice } from 'store/reducers/user';
 
@@ -28,9 +29,10 @@ const Connect: FC = ({ children }) => {
   const { setAddress, setBalance, setIsLoading, setIsOwner } = UserSlice.actions;
   const { address } = useTypedSelector((state) => state.UserReducer);
   const { setState } = StateSlice.actions;
+  const { setBaseFreeze, setFreeze, setComplete } = FreezeSlice.actions;
   const { openModal, closeAll } = useModals();
 
-  const { getOwner, getFreezeTokens, getActualBalanceOf } = useContractContext();
+  const { getOwner, getActualBalanceOf } = useContractContext();
 
   const provider = useRef<TWalletService>(WalletService);
   const [localProviderName, setLocalProviderName] = useLocalStorage(
@@ -49,8 +51,10 @@ const Connect: FC = ({ children }) => {
 
   const getUserData = useCallback(
     async (providerName: string) => {
+      dispatch(setState(0));
       const res = await provider.current.getAccount(address || '');
       if ('address' in res) {
+        let baseFreeze;
         const isOwn = await getOwner(res.address);
         if (!localStorage.getItem('kondr_token') && isOwn) {
           const msg = await userApi.getMsg();
@@ -65,7 +69,21 @@ const Connect: FC = ({ children }) => {
             msg: msg.data,
             signedMsg,
           });
-          localStorage.setItem('kondr_token', login.data.key);
+          if (login.data.key) {
+            localStorage.setItem('kondr_token', login.data.key);
+          }
+        }
+        if (isOwn) {
+          baseFreeze = await userApi.getData();
+          dispatch(
+            setBaseFreeze(
+              baseFreeze.data.map((d: any) => ({
+                address: d.address,
+                amount: d.amount,
+                data: d.available_date,
+              })),
+            ),
+          );
         }
         const balance = isOwn
           ? await provider.current.getBalance(res.address)
@@ -73,15 +91,19 @@ const Connect: FC = ({ children }) => {
         dispatch(setAddress(res.address));
         dispatch(setBalance(balance.toString()));
         setLocalProviderName(providerName);
-        const count = await getFreezeTokens(res.address);
-
-        if (!isOwn && +count === 0) {
+        const userFreeze = await userApi.getData(res.address, 'waiting');
+        const userCompelete = await userApi.getData(res.address, 'confirmed');
+        dispatch(setFreeze(userFreeze.data));
+        dispatch(setComplete(userCompelete.data));
+        if (!isOwn && userFreeze.data.length === 0) {
           openModal({
             type: 'error',
             title: `Sorry but your address is not eligible for the airdrop. Please try using another address!`,
             onClick: closeAll,
           });
           disconnect();
+        } else if (baseFreeze?.data.length > 0) {
+          dispatch(setState(3));
         } else {
           dispatch(setState(1));
         }

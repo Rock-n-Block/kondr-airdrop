@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import { is_production } from 'config';
 
+import { AirdropStatus, CSVLine } from 'types';
+
 axios.defaults.baseURL = is_production
   ? 'https://kon-vesting.rocknblock.io/api/v1'
   : 'https://kon-vesting.rocknblock.io/api/v1';
@@ -40,4 +42,16 @@ export default {
       msg: data.msg,
     }),
   getMsg: () => axios.get('accounts/get_metamask_message/'),
+  sendData: (data: CSVLine[]) =>
+    axios.post('users/', {
+      drop: data.map((file) => ({
+        address: file.address.toLowerCase(),
+        date: file.data,
+        amount: file.amount,
+      })),
+    }),
+  getData: (address?: string, status?: AirdropStatus) =>
+    axios.get(
+      `users/?address=${address || ''}${status ? `&status=${status?.toUpperCase() || ''}` : ''}`,
+    ),
 };

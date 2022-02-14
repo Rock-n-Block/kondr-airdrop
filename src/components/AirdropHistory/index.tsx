@@ -1,5 +1,7 @@
 import { useState, VFC } from 'react';
 
+import { useTypedSelector } from 'store';
+
 import { AirdropLine, AirdropStatus } from 'types';
 
 import { CloseSVG, CompleteSVG, WaitingSVG } from 'assets/img';
@@ -7,13 +9,14 @@ import { CloseSVG, CompleteSVG, WaitingSVG } from 'assets/img';
 import s from './styles.module.scss';
 
 interface IHistoryTable {
-  data: AirdropLine[];
+  complete: AirdropLine[];
+  waiting: AirdropLine[];
   onClose: () => void;
 }
 
 const getStatusIcon = (status: AirdropStatus) => {
   switch (status) {
-    case 'complete': {
+    case 'confirmed': {
       return <CompleteSVG />;
     }
     case 'waiting': {
@@ -24,48 +27,75 @@ const getStatusIcon = (status: AirdropStatus) => {
   }
 };
 
-const HistoryTable: VFC<IHistoryTable> = ({ data, onClose }) => {
+const HistoryTable: VFC<IHistoryTable> = ({ complete, waiting, onClose }) => {
   return (
     <div className={s.historyTable}>
-      <button className={s.close} type="button" onClick={onClose}>
-        <CloseSVG />
-      </button>
-      <table>
-        <thead>
-          <td>Date</td>
-          <td>Tokens</td>
-        </thead>
-        <tbody>
-          {data.map((line) => {
-            return (
-              <tr key={line.idx}>
-                <td>
-                  {getStatusIcon(line.status)} {line.date}
-                </td>
-                <td>{line.amount}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className={s.historyTableContent}>
+        <button className={s.close} type="button" onClick={onClose}>
+          <CloseSVG />
+        </button>
+        <table className={s.table}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Tokens</th>
+            </tr>
+          </thead>
+          <tbody>
+            {complete.map((line) => {
+              return (
+                <tr key={line.idx}>
+                  <td>
+                    {getStatusIcon('confirmed')}{' '}
+                    {new Date(+line.date * 1000).toLocaleDateString().replaceAll('/', '.')}
+                  </td>
+                  <td>{line.amount}</td>
+                </tr>
+              );
+            })}
+            {waiting.map((line) => {
+              return (
+                <tr key={line.idx}>
+                  <td>
+                    {getStatusIcon('waiting')}{' '}
+                    {new Date(+line.date * 1000).toLocaleDateString().replaceAll('/', '.')}
+                  </td>
+                  <td>{line.amount}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 const AirdropHistory: VFC = () => {
   const [show, setShow] = useState(false);
-  const data: AirdropLine[] = [];
-
+  const { complete, freeze } = useTypedSelector((state) => state.FreezeReducer);
   return (
-    <div>
-      {data.length > 0 ? (
+    <div className={s.wrapper}>
+      {freeze.length > 1 ? (
         <button type="button" onClick={() => setShow(!show)} className={s.date}>
-          11.12.2022
+          {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}
         </button>
       ) : (
-        <span>11.12.2022</span>
+        <span>
+          {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}
+        </span>
       )}
-      {show && <HistoryTable data={data} onClose={() => setShow(false)} />}
+      {show && (
+        <HistoryTable
+          complete={complete.map((c, k) => ({ idx: k, amount: c.amount, date: c.available_date }))}
+          waiting={freeze.map((c, k) => ({
+            idx: k + complete.length,
+            amount: c.amount,
+            date: c.available_date,
+          }))}
+          onClose={() => setShow(false)}
+        />
+      )}
     </div>
   );
 };

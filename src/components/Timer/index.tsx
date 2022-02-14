@@ -1,5 +1,7 @@
 import { useEffect, VFC } from 'react';
 
+import { AirdropHistory } from 'components';
+
 import s from './styles.module.scss';
 
 interface ITimer {
@@ -36,10 +38,14 @@ const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
 
   return (
     <div className={s.wrapper}>
-      {seconds > 0 && <span className={s.next}>NEXT RELEASE OF {amount} WILL BE IN:</span>}
+      {seconds === 0 && (
+        <div className={s.next}>
+          NEXT RELEASE OF {amount} WILL BE IN: <AirdropHistory />
+        </div>
+      )}
       <span className={s.timer}>
         {generateTime(seconds)}
-        {seconds <= singleDay ? (
+        {seconds >= singleDay ? (
           <span className={s.minuts}>{seconds / singleDay >= 2 ? 'days' : 'day'}</span>
         ) : (
           <>
