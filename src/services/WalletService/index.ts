@@ -57,6 +57,10 @@ class WalletService {
     this.connectWallet.resetConect();
   }
 
+  public signMsg(address: string, msg: string) {
+    return this.connectWallet.signMsg(address, msg);
+  }
+
   public Web3(): Web3 {
     return this.connectWallet.currentWeb3();
   }
@@ -94,8 +98,8 @@ class WalletService {
     return this.connectWallet.getBalance(address);
   }
 
-  public getCurrentChain(){
-     return this.currentChain;
+  public getCurrentChain() {
+    return this.currentChain;
   }
 
   public eventSubscribe(callbacks?: IEventSubscriberCallbacks): void {

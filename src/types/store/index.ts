@@ -14,6 +14,15 @@ export type CSVLine = {
   idx: number;
 };
 
+export type AirdropStatus = 'complete' | 'waiting';
+
+export type AirdropLine = {
+  date: string;
+  status: AirdropStatus;
+  amount: string;
+  idx: number;
+};
+
 export interface FileState {
   files: TNullable<CSVLine[]>;
   file: TNullable<File>;

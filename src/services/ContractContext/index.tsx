@@ -59,11 +59,11 @@ const Contract: FC = ({ children }) => {
 
   const getOwner = useCallback(
     async (addr: string) => {
-      const owner: string = await tokenContract.methods.owner().call();
-      dispatch(setIsOwner(addr.toLowerCase() === owner.toLowerCase()));
-      return addr.toLowerCase() === owner.toLowerCase();
+      const isOwner: boolean = await airContract.methods.isOwner(addr).call();
+      dispatch(setIsOwner(isOwner));
+      return isOwner;
     },
-    [dispatch, setIsOwner, tokenContract.methods],
+    [airContract.methods, dispatch, setIsOwner],
   );
 
   const getBalance = useCallback(async () => {

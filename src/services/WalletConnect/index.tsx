@@ -8,6 +8,7 @@ import { UserSlice } from 'store/reducers/user';
 import { logger } from 'utils';
 
 import useLocalStorage from 'hooks/useLocalStorage';
+import { userApi } from 'services/api';
 import { useContractContext } from 'services/ContractContext';
 import ContractService from 'services/ContractService';
 import { useModals } from 'services/ModalsContext';
@@ -39,6 +40,7 @@ const Connect: FC = ({ children }) => {
 
   const disconnect = useCallback(() => {
     setLocalProviderName('');
+    localStorage.removeItem('kondr_token');
     dispatch(setAddress(''));
     dispatch(setBalance('0'));
     dispatch(setIsOwner(false));
@@ -50,6 +52,21 @@ const Connect: FC = ({ children }) => {
       const res = await provider.current.getAccount(address || '');
       if ('address' in res) {
         const isOwn = await getOwner(res.address);
+        if (!localStorage.getItem('kondr_token') && isOwn) {
+          const msg = await userApi.getMsg();
+          const signedMsg = await provider.current.signMsg(res.address, msg.data);
+          logger('login', {
+            address: res.address,
+            msg: msg.data,
+            signedMsg,
+          });
+          const login: any = await userApi.login({
+            address: res.address,
+            msg: msg.data,
+            signedMsg,
+          });
+          localStorage.setItem('kondr_token', login.data.key);
+        }
         const balance = isOwn
           ? await provider.current.getBalance(res.address)
           : await getActualBalanceOf(res.address);

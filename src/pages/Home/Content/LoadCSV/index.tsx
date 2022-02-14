@@ -188,11 +188,11 @@ const LoadCSV: VFC = () => {
     ];
     const repeats = 2;
     const delay = 20 * 60;
-    const timestamp = Date.now() / 1000 + delay;
+    const timestamp = Date.now() / 1000;
     const csvData: any[] = [];
     for (let i = 0; i < repeats; i += 1) {
       addrs.forEach((addr) => {
-        csvData.push([addr, getRandomIntInclusive(1, 1000), timestamp]);
+        csvData.push([addr, getRandomIntInclusive(1, 1000), timestamp + delay * (i + 1)]);
       });
     }
     const csvExampleText = csvData.reduce(

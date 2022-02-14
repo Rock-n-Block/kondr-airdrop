@@ -8,16 +8,21 @@ interface ITimer {
   amount: string;
 }
 
+const singleDay = 86400;
+
 const generateTime = (seconds: number) => {
-  let sec = seconds;
-  const h = Math.floor(sec / 3600);
-  sec -= h * 3600;
-  const m = Math.floor(sec / 60);
-  sec -= m * 60;
-  sec = Math.floor(sec);
-  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec
-    .toString()
-    .padStart(2, '0')}`;
+  if (seconds <= singleDay) {
+    let sec = seconds;
+    const h = Math.floor(sec / 3600);
+    sec -= h * 3600;
+    const m = Math.floor(sec / 60);
+    sec -= m * 60;
+    sec = Math.floor(sec);
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec
+      .toString()
+      .padStart(2, '0')}`;
+  }
+  return `${Math.ceil(seconds / singleDay)}`;
 };
 
 const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
@@ -34,9 +39,15 @@ const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
       {seconds > 0 && <span className={s.next}>NEXT RELEASE OF {amount} WILL BE IN:</span>}
       <span className={s.timer}>
         {generateTime(seconds)}
-        <span className={s.hours}>hours</span>
-        <span className={s.minuts}>minuts</span>
-        <span className={s.seconds}>second</span>
+        {seconds <= singleDay ? (
+          <span className={s.minuts}>{seconds / singleDay >= 2 ? 'days' : 'day'}</span>
+        ) : (
+          <>
+            <span className={s.hours}>hours</span>
+            <span className={s.minuts}>minuts</span>
+            <span className={s.seconds}>second</span>
+          </>
+        )}
       </span>
     </div>
   );
