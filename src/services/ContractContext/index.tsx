@@ -171,24 +171,28 @@ const Contract: FC = ({ children }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (amount, timestamp, signature) => {
       dispatch(setIsLoading(true));
-      const res = await airContract.methods
-        .claimTokens(amount, timestamp, signature)
-        .send({ from: address });
-      if (res.status) {
-        openModal({
-          type: 'success',
-          title: `Great! You successfully received your tokens.`,
-          onClick: closeAll,
-        });
-        dispatch(setState(0));
-        dispatch(setAddress(''));
-        dispatch(setBalance('0'));
-        dispatch(setIsOwner(false));
-      } else {
-        openModal({
-          type: 'error',
-          title: `Receiving error! Please try again later`,
-        });
+      try {
+        const res = await airContract.methods
+          .claimTokens(amount, timestamp, signature)
+          .send({ from: address });
+        if (res.status) {
+          openModal({
+            type: 'success',
+            title: `Great! You successfully received your tokens.`,
+            onClick: closeAll,
+          });
+          dispatch(setState(0));
+          dispatch(setAddress(''));
+          dispatch(setBalance('0'));
+          dispatch(setIsOwner(false));
+        } else {
+          openModal({
+            type: 'error',
+            title: `Receiving error! Please try again later`,
+          });
+        }
+      } catch (e: any) {
+        dispatch(setIsLoading(false));
       }
       dispatch(setIsLoading(false));
     },
