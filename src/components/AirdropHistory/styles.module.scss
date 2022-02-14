@@ -1,0 +1,118 @@
+@import '/src/styles/variables';
+@import '/src/styles/mixins/helpers.scss';
+
+.wrapper {
+  position: relative;
+
+  .date{
+        background: transparent;
+        border: none;
+        color: $font-color;
+        text-decoration: underline;
+        font-size: inherit;
+        cursor: pointer;
+  }
+
+  .historyTable {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 2;
+    min-width: 540px;
+    padding: 35px 28px;
+    border-radius: 12px;
+    background: $primary;
+
+    &Content {
+      position: relative;
+      .close {
+        position: absolute;
+        top: -20px;
+        right: -12px;
+        background: transparent;
+        border: 0px solid transparent;
+        transition: 0.3s ease;
+
+        &:hover {
+          transform: rotate(180deg);
+        }
+      }
+
+      .table {
+        width: 100%;
+        color: $blue;
+        font-size: 1.125rem;
+
+        thead {
+          font-weight: 600;
+          border-bottom: 1px solid rgba($blue, 0.2);
+          tr {
+            display: block;
+            th {
+              width: 75%;
+              padding: 0 0.625rem 1.5625rem;
+              text-align: start;
+            }
+          }
+        }
+        tbody {
+          display: block;
+          overflow: auto;
+          max-height: 270px;
+          width: 100%;
+          border-bottom: 1px solid rgba($blue, 0.2);
+          &::-webkit-scrollbar {
+            width: 10px;
+            height: 90%;
+          }
+          &::-webkit-scrollbar-track {
+              margin: 10px 0;
+            background: linear-gradient(
+              90deg,
+              $primary 0%,
+              $primary  25%,
+              rgba(242, 242, 242, 1) 25%,
+              rgba(242, 242, 242, 1) 75%,
+              $primary  75%,
+              $primary  100%
+            );
+            border-radius: 5px;
+          }
+          &::-webkit-scrollbar-thumb{
+              background: rgba(217, 155, 255, 1);
+              border-radius: 5px;
+          }
+          tr {
+            width: 100%;
+            td {
+              width: 83.5%;
+              padding: 1.25rem 0.625rem;
+              svg {
+                margin-bottom: -5px;
+              }
+
+              &.address {
+                @include ellipsis;
+                @media (max-width: 541px) {
+                  max-width: 200px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px){
+    .wrapper{
+        .historyTable{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 90%;
+            transform: translate(-50%, -50%);
+        }
+    }
+}

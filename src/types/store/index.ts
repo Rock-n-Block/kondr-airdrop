@@ -14,6 +14,14 @@ export type CSVLine = {
   idx: number;
 };
 
+export type AirdropStatus = 'confirmed' | 'waiting';
+
+export type AirdropLine = {
+  date: string;
+  amount: string;
+  idx: number;
+};
+
 export interface FileState {
   files: TNullable<CSVLine[]>;
   file: TNullable<File>;
@@ -22,12 +30,16 @@ export interface FileState {
 }
 
 export type FreezeElement = {
-  release: number;
-  balance: string;
+  address: string;
+  amount: string;
+  available_date: string;
+  signature: string;
 };
 
 export interface FreezeState {
   freeze: FreezeElement[];
+  complete: FreezeElement[];
+  baseFreeze: TNullable<CSVLine[]>;
   collect: string;
   isLoading: boolean;
 }

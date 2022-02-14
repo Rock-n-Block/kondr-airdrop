@@ -73,11 +73,11 @@ export const contracts: IContracts = {
   params: {
     AIRDROP: {
       mainnet: {
-        address: '0xB72e18e2df243a26dcE5bD2Ed3aC6911B12A7A61',
+        address: '0xE59004C4D160BF33acEe81DAdb00E1Db95DaF836',
         abi: airdropAbi,
       },
       testnet: {
-        address: '0xB72e18e2df243a26dcE5bD2Ed3aC6911B12A7A61',
+        address: '0xE59004C4D160BF33acEe81DAdb00E1Db95DaF836',
         abi: airdropAbi,
       },
     },

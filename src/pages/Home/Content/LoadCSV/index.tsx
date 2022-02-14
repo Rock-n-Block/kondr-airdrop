@@ -2,11 +2,13 @@ import { FormEvent, useCallback, useState, VFC } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
 import { FileSlice } from 'store/reducers/files';
+import { FreezeSlice } from 'store/reducers/freeze';
 import { StateSlice } from 'store/reducers/state';
 
 import { Button, Table } from 'components';
 import { logger } from 'utils';
 
+import { userApi } from 'services/api';
 import { useContractContext } from 'services/ContractContext';
 import { useModals } from 'services/ModalsContext';
 import { CSVLine } from 'types';
@@ -27,11 +29,13 @@ const LoadCSV: VFC = () => {
   const dispatch = useTypedDispatch();
   const { setFiles, setFile, setIsLoading, setError } = FileSlice.actions;
   const { files, file, isLoading } = useTypedSelector((state) => state.FileReducer);
-  const { approveFreeze, getBalance, web3utils } = useContractContext();
+  const { /* approveFreeze , */ getBalance, web3utils } = useContractContext();
   const { openModal, closeAll } = useModals();
   const { balance } = useTypedSelector((state) => state.UserReducer);
+  const { baseFreeze } = useTypedSelector((state) => state.FreezeReducer);
   const { state } = useTypedSelector((st) => st.StateReducer);
   const { setState } = StateSlice.actions;
+  const { setBaseFreeze } = FreezeSlice.actions;
   const [loadingFreeze, setLoadingFreeze] = useState(false);
 
   const ReadFile = useCallback(async () => {
@@ -164,17 +168,43 @@ const LoadCSV: VFC = () => {
   const onApprove = useCallback(async () => {
     if (files) {
       setLoadingFreeze(true);
-      const addresses = files.map((line) => line.address);
+      /* const addresses = files.map((line) => line.address);
       const tokens = files.map((line) => line.amount);
-      const freezeTime = files.map((line) => line.data.replace('\r', ''));
+      const freezeTime = files.map((line) => line.data.replace('\r', '')); */
       try {
-        await approveFreeze(addresses, tokens, freezeTime);
+        const res = await userApi.sendData(files);
+        if (res.status === 201) {
+          openModal({
+            type: 'success',
+            title: `Your tokens have been successfully distributed`,
+            onClick: closeAll,
+          });
+          dispatch(setFile(null));
+          dispatch(setFiles([]));
+          const baseData = await userApi.getData();
+          dispatch(
+            setBaseFreeze(
+              baseData.data.map((d: any) => ({
+                address: d.address,
+                amount: d.amount,
+                data: d.available_date,
+              })),
+            ),
+          );
+        } else {
+          openModal({
+            type: 'error',
+            title: res.statusText,
+            onClick: closeAll,
+          });
+        }
+        // await approveFreeze(addresses, tokens, freezeTime);
       } catch {
         dispatch(setIsLoading(false));
       }
       setLoadingFreeze(false);
     }
-  }, [approveFreeze, dispatch, files, setIsLoading]);
+  }, [closeAll, dispatch, files, openModal, setBaseFreeze, setFile, setFiles, setIsLoading]);
 
   const onProceed = useCallback(() => {
     ReadFile();
@@ -188,11 +218,11 @@ const LoadCSV: VFC = () => {
     ];
     const repeats = 2;
     const delay = 20 * 60;
-    const timestamp = Date.now() / 1000 + delay;
+    const timestamp = Date.now() / 1000;
     const csvData: any[] = [];
     for (let i = 0; i < repeats; i += 1) {
       addrs.forEach((addr) => {
-        csvData.push([addr, getRandomIntInclusive(1, 1000), timestamp]);
+        csvData.push([addr, getRandomIntInclusive(1, 1000), timestamp + delay * (i + 1)]);
       });
     }
     const csvExampleText = csvData.reduce(
@@ -220,9 +250,9 @@ const LoadCSV: VFC = () => {
           Sample file
         </button>
       )}
-      {files && state === 3 && files?.length > 0 && (
+      {((files && files?.length > 0) || (baseFreeze && baseFreeze.length)) && state === 3 && (
         <div className={s.csvData}>
-          <Table data={files} onDelete={onDelete} />
+          <Table data={files || []} onDelete={onDelete} baseData={baseFreeze || []} />
         </div>
       )}
       {state !== 1 && (
@@ -233,7 +263,10 @@ const LoadCSV: VFC = () => {
           type="button"
           name={state === 3 ? 'Approve' : 'Proceed'}
           theme="purple"
-          disabled={state === 3 && +balance < calcTotal(files || [])}
+          disabled={
+            state === 3 &&
+            (+balance < calcTotal(files || []) || !Array.isArray(files) || files.length === 0)
+          }
           isLoading={loadingFreeze}
         />
       )}

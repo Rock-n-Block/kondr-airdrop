@@ -24,7 +24,7 @@ const Contract: FC = ({ children }) => {
 
   const { address } = useTypedSelector((state) => state.UserReducer);
   const { setFile, setFiles } = FileSlice.actions;
-  const { setFreeze, setIsLoading } = FreezeSlice.actions;
+  const { setIsLoading } = FreezeSlice.actions;
   const { setBalance, setIsOwner, setAddress } = UserSlice.actions;
   const { setState } = StateSlice.actions;
   const [tokenContract, setTokenContract] = useState(
@@ -59,11 +59,11 @@ const Contract: FC = ({ children }) => {
 
   const getOwner = useCallback(
     async (addr: string) => {
-      const owner: string = await tokenContract.methods.owner().call();
-      dispatch(setIsOwner(addr.toLowerCase() === owner.toLowerCase()));
-      return addr.toLowerCase() === owner.toLowerCase();
+      const isOwner: boolean = await airContract.methods.isOwner(addr).call();
+      dispatch(setIsOwner(isOwner));
+      return isOwner;
     },
-    [dispatch, setIsOwner, tokenContract.methods],
+    [airContract.methods, dispatch, setIsOwner],
   );
 
   const getBalance = useCallback(async () => {
@@ -142,7 +142,7 @@ const Contract: FC = ({ children }) => {
     ],
   );
 
-  const getFreezeTokens = useCallback(
+  /* const getFreezeTokens = useCallback(
     async (addr: string) => {
       const count = await tokenContract.methods
         .freezingCount(addr)
@@ -165,14 +165,16 @@ const Contract: FC = ({ children }) => {
       return count;
     },
     [dispatch, setFreeze, tokenContract.methods],
-  );
+  ); */
 
   const claimTokens = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async () => {
+    async (amount, timestamp, signature) => {
       dispatch(setIsLoading(true));
-      const res = await tokenContract.methods.releaseAll().send({ from: address });
-      if ('Released' in res.events) {
+      const res = await airContract.methods
+        .claimTokens(amount, timestamp, signature)
+        .send({ from: address });
+      if (res.status) {
         openModal({
           type: 'success',
           title: `Great! You successfully received your tokens.`,
@@ -192,6 +194,7 @@ const Contract: FC = ({ children }) => {
     },
     [
       address,
+      airContract.methods,
       closeAll,
       dispatch,
       openModal,
@@ -200,21 +203,20 @@ const Contract: FC = ({ children }) => {
       setIsLoading,
       setIsOwner,
       setState,
-      tokenContract.methods,
     ],
   );
 
   const ContractValues = useMemo(
     () => ({
       claimTokens,
-      getFreezeTokens,
+      /* getFreezeTokens, */
       approveFreeze,
       getBalance,
       getOwner,
       getActualBalanceOf,
       web3utils: cService.getWeb3utils(),
     }),
-    [approveFreeze, claimTokens, getBalance, getFreezeTokens, getOwner, getActualBalanceOf],
+    [approveFreeze, claimTokens, getBalance, /* getFreezeTokens, */ getOwner, getActualBalanceOf],
   );
 
   return <ContractContext.Provider value={ContractValues}>{children}</ContractContext.Provider>;

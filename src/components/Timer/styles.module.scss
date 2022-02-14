@@ -6,6 +6,7 @@
     @include flex(column, center, center, nowrap);
 
     .next{
+        @include flex(row, center, space-between, nowrap);
         font-size: 28px;
         color: $font-color;
         letter-spacing: 2px;
@@ -56,6 +57,15 @@
             .seconds{
                 right: 0%;
             }
+        }
+    }
+}
+
+@media (max-width: 540px){
+    .wrapper{
+        .next{
+            @include flex(column, center, space-evenly, nowrap);
+            text-align: center;
         }
     }
 }

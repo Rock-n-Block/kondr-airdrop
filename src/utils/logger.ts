@@ -9,7 +9,7 @@ type TLogger = 'log' | 'error' | 'warn' | 'info';
  */
 const logger = (title?: string, msg?: any, type: TLogger = 'info'): void => {
   if (!is_production) {
-    console[type](`${title}\n${msg}`);
+    console[type](`${title}\n${JSON.stringify(msg)}`);
   }
 };
 

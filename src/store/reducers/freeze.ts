@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FreezeElement, FreezeState } from 'types/store';
+import { CSVLine, FreezeElement, FreezeState } from 'types/store';
 
 const initialState: FreezeState = {
   freeze: [],
+  complete: [],
+  baseFreeze: [],
   collect: '0',
   isLoading: false,
 };
@@ -14,12 +16,18 @@ export const FreezeSlice = createSlice({
     setIsLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
-    setFreeze(state, action: PayloadAction<FreezeElement>){
-        state.freeze = [...state.freeze, action.payload];
+    setFreeze(state, action: PayloadAction<FreezeElement[]>) {
+      state.freeze = action.payload;
     },
-    setCollect(state, action: PayloadAction<string>){
+    setCollect(state, action: PayloadAction<string>) {
       state.collect = action.payload;
-    }
+    },
+    setBaseFreeze(state, action: PayloadAction<CSVLine[]>) {
+      state.baseFreeze = action.payload;
+    },
+    setComplete(state, action: PayloadAction<FreezeElement[]>) {
+      state.complete = action.payload;
+    },
   },
 });
 
