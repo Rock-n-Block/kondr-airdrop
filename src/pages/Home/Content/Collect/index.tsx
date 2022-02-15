@@ -5,13 +5,13 @@ import { FreezeSlice } from 'store/reducers/freeze';
 import { StateSlice } from 'store/reducers/state';
 
 import { Button, Timer } from 'components';
+import { logger } from 'utils';
 
 import { useContractContext } from 'services/ContractContext';
 
 import { Connection } from '..';
 
 import s from '../styles.module.scss';
-import { logger } from 'utils';
 
 const Collect: VFC = () => {
   const { freeze, isLoading } = useTypedSelector((state) => state.FreezeReducer);
@@ -49,15 +49,15 @@ const Collect: VFC = () => {
   }, [claimTokens, collectData]);
 
   const [seconds, setSeconds] = useState(
-    +collectData[0].available_date - Date.now() > 0
-      ? +collectData[0].available_date - Date.now()
+    +collectData[0].available_date - Date.now() / 1000 > 0
+      ? +collectData[0].available_date - Date.now() / 1000
       : 0,
   );
 
   useEffect(() => {
     setSeconds(
-      +collectData[0].available_date - Date.now() > 0
-        ? +collectData[0].available_date - Date.now()
+      +collectData[0].available_date - Date.now() / 1000 > 0
+        ? +collectData[0].available_date - Date.now() / 1000
         : 0,
     );
   }, [collectData]);
