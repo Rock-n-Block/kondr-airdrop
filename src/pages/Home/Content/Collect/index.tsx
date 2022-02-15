@@ -11,6 +11,7 @@ import { useContractContext } from 'services/ContractContext';
 import { Connection } from '..';
 
 import s from '../styles.module.scss';
+import { logger } from 'utils';
 
 const Collect: VFC = () => {
   const { freeze, isLoading } = useTypedSelector((state) => state.FreezeReducer);
@@ -20,6 +21,10 @@ const Collect: VFC = () => {
   const { setCollect } = FreezeSlice.actions;
   const collectData = useMemo(() => {
     const minimal = [...freeze].sort((f, sec) => +f.available_date - +sec.available_date)[0];
+    logger(
+      'collect data',
+      freeze.filter((f) => f.available_date === minimal.available_date),
+    );
     return freeze.filter((f) => f.available_date === minimal.available_date);
   }, [freeze]);
 
@@ -36,6 +41,10 @@ const Collect: VFC = () => {
   }, [collectData, dispatch, setCollect]);
 
   const onClaimClick = useCallback(() => {
+    logger('collect data', {
+      amount: collectData[0].amount,
+      signature: collectData[0].signature,
+    });
     claimTokens(collectData[0].amount, collectData[0].available_date, collectData[0].signature);
   }, [claimTokens, collectData]);
 
