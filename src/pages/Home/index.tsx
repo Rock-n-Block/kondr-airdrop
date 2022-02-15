@@ -66,7 +66,7 @@ const Home: FC = () => {
   return (
     <div className={s.home_wrapper}>
       <h1 className={s.title}>
-        {getTitle(isOwner, state)('KON', state === 1 ? balance : collect)}
+        {getTitle(isOwner, state)('KON', state === 1 ? Number(balance).toFixed(2) : collect)}
       </h1>
       {getContent(isOwner, state)}
     </div>
