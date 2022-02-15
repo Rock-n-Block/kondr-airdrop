@@ -173,7 +173,7 @@ const Contract: FC = ({ children }) => {
       dispatch(setIsLoading(true));
       try {
         const res = await airContract.methods
-          .claimTokens(amount, timestamp, signature)
+          .claimTokens(deNormalizedValue(amount), timestamp, signature)
           .send({ from: address });
         if (res.status) {
           openModal({
