@@ -40,7 +40,7 @@ const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
     <div className={s.wrapper}>
       {seconds > 0 && (
         <div className={s.next}>
-          NEXT RELEASE OF {amount} WILL BE IN: <AirdropHistory />
+          NEXT RELEASE OF {amount} WILL BE IN <AirdropHistory />
         </div>
       )}
       <span className={s.timer}>
