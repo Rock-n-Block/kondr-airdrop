@@ -6,7 +6,7 @@ import { FreezeSlice } from 'store/reducers/freeze';
 import { StateSlice } from 'store/reducers/state';
 import { UserSlice } from 'store/reducers/user';
 
-import { logger } from 'utils';
+import { logger, normalizedValue } from 'utils';
 
 import useLocalStorage from 'hooks/useLocalStorage';
 import { userApi } from 'services/api';
@@ -87,7 +87,7 @@ const Connect: FC = ({ children }) => {
         }
         const balance = isOwn
           ? await provider.current.getBalance(res.address)
-          : await getActualBalanceOf(res.address);
+          : await getActualBalanceOf(res.address).then((r: any) => normalizedValue(r));
         dispatch(setAddress(res.address));
         dispatch(setBalance(balance.toString()));
         setLocalProviderName(providerName);
