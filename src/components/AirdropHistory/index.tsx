@@ -4,7 +4,7 @@ import { useTypedSelector } from 'store';
 
 import { AirdropLine, AirdropStatus } from 'types';
 
-import { CloseSVG, CompleteSVG, WaitingSVG } from 'assets/img';
+import { CloseSVG, CompleteSVG, OpenSVG, WaitingSVG } from 'assets/img';
 
 import s from './styles.module.scss';
 
@@ -78,10 +78,13 @@ const AirdropHistory: VFC = () => {
     <div className={s.wrapper}>
       {freeze.length > 1 ? (
         <button type="button" onClick={() => setShow(!show)} className={s.date}>
-          {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}
+          {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}{' '}
+          <span className={`${s.arrow} ${show && s.rotate}`}>
+            <OpenSVG />
+          </span>
         </button>
       ) : (
-        <span>
+        <span className={s.dateSingle}>
           {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}
         </span>
       )}

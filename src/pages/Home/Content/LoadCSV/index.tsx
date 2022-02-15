@@ -214,7 +214,7 @@ const LoadCSV: VFC = () => {
     const addrs = [
       '0x063C22e0917b4B051cb81Ef91c5052Cd8C0D0E56',
       '0xBF7E42e9254A5E64D946bD206120ae5BafaC7781',
-      '0x4d9806EB6FF37a8ab8375058CB43556Aa5763Db0',
+      ' ',
     ];
     const repeats = 2;
     const delay = 20 * 60;
