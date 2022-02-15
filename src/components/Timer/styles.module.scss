@@ -6,10 +6,12 @@
     @include flex(column, center, center, nowrap);
 
     .next{
-        @include flex(row, center, space-between, nowrap);
+        @include flex(row, center, center, wrap);
+        text-align: center;
         font-size: 28px;
         color: $font-color;
         letter-spacing: 2px;
+        line-height: 1.2;
     }
 
     .timer{

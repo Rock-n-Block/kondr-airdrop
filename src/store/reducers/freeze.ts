@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CSVLine, FreezeElement, FreezeState } from 'types/store';
+import { normalizedValue } from 'utils';
 
 const initialState: FreezeState = {
   freeze: [],
@@ -17,16 +18,24 @@ export const FreezeSlice = createSlice({
       state.isLoading = action.payload;
     },
     setFreeze(state, action: PayloadAction<FreezeElement[]>) {
-      state.freeze = action.payload.sort((a, b) => +a.available_date - +b.available_date);
+      state.freeze = action.payload
+        .sort((a, b) => +a.available_date - +b.available_date)
+        .map((f) => ({ ...f, amount: normalizedValue(f.amount).toString() }));
     },
     setCollect(state, action: PayloadAction<string>) {
       state.collect = action.payload;
     },
     setBaseFreeze(state, action: PayloadAction<CSVLine[]>) {
-      state.baseFreeze = action.payload;
+      state.baseFreeze = action.payload.map((f) => ({
+        ...f,
+        amount: normalizedValue(f.amount).toString(),
+      }));
     },
     setComplete(state, action: PayloadAction<FreezeElement[]>) {
-      state.complete = action.payload;
+      state.complete = action.payload.map((f) => ({
+        ...f,
+        amount: normalizedValue(f.amount).toString(),
+      }));
     },
   },
 });

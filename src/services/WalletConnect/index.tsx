@@ -92,9 +92,9 @@ const Connect: FC = ({ children }) => {
         dispatch(setBalance(balance.toString()));
         setLocalProviderName(providerName);
         const userFreeze = await userApi.getData(res.address, 'waiting');
-        const userCompelete = await userApi.getData(res.address, 'confirmed');
+        const userComplete = await userApi.getData(res.address, 'confirmed');
         dispatch(setFreeze(userFreeze.data));
-        dispatch(setComplete(userCompelete.data));
+        dispatch(setComplete(userComplete.data));
         if (!isOwn && userFreeze.data.length === 0) {
           openModal({
             type: 'error',

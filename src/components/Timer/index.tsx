@@ -30,7 +30,7 @@ const generateTime = (seconds: number) => {
 const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
   useEffect(() => {
     // eslint-disable-next-line no-confusing-arrow
-    const t = setInterval(() => setSeconds((prev: number) => (prev > 0 ? prev - 1 : 0)), 1000);
+    const t = setInterval(() => setSeconds((prev: number) => (prev >= 1 ? prev - 1 : 0)), 1000);
     return () => {
       clearInterval(t);
     };
@@ -40,7 +40,8 @@ const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
     <div className={s.wrapper}>
       {seconds > 0 && (
         <div className={s.next}>
-          NEXT RELEASE OF {amount} TOKENS WILL BE ON <AirdropHistory />
+          <span>NEXT RELEASE OF {amount} TOKENS WILL BE ON </span>
+          <AirdropHistory />
         </div>
       )}
       <span className={s.timer}>
