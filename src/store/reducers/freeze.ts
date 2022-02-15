@@ -17,7 +17,7 @@ export const FreezeSlice = createSlice({
       state.isLoading = action.payload;
     },
     setFreeze(state, action: PayloadAction<FreezeElement[]>) {
-      state.freeze = action.payload;
+      state.freeze = action.payload.sort((a, b) => +a.available_date - +b.available_date);
     },
     setCollect(state, action: PayloadAction<string>) {
       state.collect = action.payload;

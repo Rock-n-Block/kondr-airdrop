@@ -24,7 +24,7 @@ const generateTime = (seconds: number) => {
       .toString()
       .padStart(2, '0')}`;
   }
-  return `${Math.ceil(seconds / singleDay)}`;
+  return `${Math.round(seconds / singleDay)}`;
 };
 
 const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
