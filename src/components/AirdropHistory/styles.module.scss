@@ -4,13 +4,31 @@
 .wrapper {
   position: relative;
 
-  .date{
-        background: transparent;
-        border: none;
-        color: $font-color;
-        text-decoration: underline;
-        font-size: inherit;
-        cursor: pointer;
+  .date {
+    background: transparent;
+    border: none;
+    color: $font-color;
+    border-bottom: 2px solid $primary;
+    font-size: inherit;
+    cursor: pointer;
+    @include flex(row, center, space-evenly, nowrap);
+    padding: 0;
+    &Single {
+      margin-left: 10px;
+    }
+
+    .arrow{
+      display: inline-block;
+      transition: .4s ease;
+      text-decoration: underline;
+      margin-right: -8px;
+      max-height: 26px;
+      transform-origin: center;
+      @include flex(row, center, center, nowrap);
+      &.rotate{
+        transform: rotate(180deg);
+      }
+    }
   }
 
   .historyTable {
@@ -66,21 +84,21 @@
             height: 90%;
           }
           &::-webkit-scrollbar-track {
-              margin: 10px 0;
+            margin: 10px 0;
             background: linear-gradient(
               90deg,
               $primary 0%,
-              $primary  25%,
+              $primary 25%,
               rgba(242, 242, 242, 1) 25%,
               rgba(242, 242, 242, 1) 75%,
-              $primary  75%,
-              $primary  100%
+              $primary 75%,
+              $primary 100%
             );
             border-radius: 5px;
           }
-          &::-webkit-scrollbar-thumb{
-              background: rgba(217, 155, 255, 1);
-              border-radius: 5px;
+          &::-webkit-scrollbar-thumb {
+            background: rgba(217, 155, 255, 1);
+            border-radius: 5px;
           }
           tr {
             width: 100%;
@@ -105,14 +123,19 @@
   }
 }
 
-@media (max-width: 768px){
-    .wrapper{
-        .historyTable{
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            min-width: 90%;
-            transform: translate(-50%, -50%);
-        }
+@media (max-width: 768px) {
+  .wrapper {
+    .date{
+      &Single{
+        margin-left: 0;
+      }
     }
+    .historyTable {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      min-width: 90%;
+      transform: translate(-50%, -50%);
+    }
+  }
 }

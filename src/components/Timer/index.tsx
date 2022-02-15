@@ -30,7 +30,7 @@ const generateTime = (seconds: number) => {
 const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
   useEffect(() => {
     // eslint-disable-next-line no-confusing-arrow
-    const t = setInterval(() => setSeconds((prev: number) => (prev > 0 ? prev - 1 : 0)), 1000);
+    const t = setInterval(() => setSeconds((prev: number) => (prev !== 0 ? prev - 1 : 0)), 1000);
     return () => {
       clearInterval(t);
     };
