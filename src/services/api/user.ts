@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { is_production } from 'config';
+import { deNormalizedValue } from 'utils';
 
 import { AirdropStatus, CSVLine } from 'types';
 
@@ -47,7 +48,7 @@ export default {
       drop: data.map((file) => ({
         address: file.address.toLowerCase(),
         date: file.data,
-        amount: file.amount,
+        amount: deNormalizedValue(file.amount),
       })),
     }),
   getData: (address?: string, status?: AirdropStatus) =>

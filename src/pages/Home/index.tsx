@@ -24,7 +24,7 @@ const getTitle = (isOwner: boolean, step: number) => {
   } else {
     switch (step) {
       case 1: {
-        return (name: string, amount: string) => `YOUR TOTAL AMOUNT OF ${name} TOKENS IS ${amount}`;
+        return (name: string, amount: string) => `YOUR CURRENT AMOUNT OF ${name} TOKENS IS ${amount}`;
       }
       case 2: {
         return (name: string, amount: string) => `CLAIM ${amount} ${name} TOKENS`;
