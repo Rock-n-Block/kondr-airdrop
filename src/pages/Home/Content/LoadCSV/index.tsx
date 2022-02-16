@@ -249,11 +249,11 @@ const LoadCSV: VFC = () => {
           Sample file
         </button>
       )}
-      {((files && files?.length > 0) || (baseFreeze && baseFreeze.length)) && state === 3 && (
+      {((files && files?.length > 0) || (baseFreeze && baseFreeze.length)) && state === 3 ? (
         <div className={s.csvData}>
           <Table data={files || []} onDelete={onDelete} baseData={baseFreeze || []} />
         </div>
-      )}
+      ) : null}
       {state !== 1 && (
         <Button
           className={s.approve}
