@@ -133,6 +133,7 @@ const Table: VFC<ITable> = ({ data, baseData, onDelete }) => {
           </div>
         )}
       </div>
+      {baseData.length > 0 && <div className={s.baseData}>Please note that this table also includes previously uploaded schedules</div>}
     </div>
   );
 };

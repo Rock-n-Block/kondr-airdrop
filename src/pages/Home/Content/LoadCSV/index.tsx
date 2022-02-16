@@ -99,6 +99,14 @@ const LoadCSV: VFC = () => {
           );
           if (CSVData.length > 0) {
             dispatch(setState(3));
+            if (err.length > 0) {
+              openModal({ 
+                type: 'error',
+                title:
+                  'Some rows have been removed because of the incorrect data in one or several fields',
+                onClick: closeAll,
+              });
+            }
           } else {
             openModal({
               type: 'error',
