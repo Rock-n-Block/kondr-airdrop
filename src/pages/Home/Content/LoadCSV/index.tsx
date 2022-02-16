@@ -55,7 +55,7 @@ const LoadCSV: VFC = () => {
                 .replaceAll('"', '')
                 .replaceAll(';', ',')
                 .split(',');
-              if (!web3utils.checkAddressChecksum(address)) {
+              if (address.length < 40 || !web3utils.checkAddressChecksum(address)) {
                 err.push(`error address at line ${key + 1}\n${address}`);
                 return;
               }
@@ -214,7 +214,6 @@ const LoadCSV: VFC = () => {
     const addrs = [
       '0x063C22e0917b4B051cb81Ef91c5052Cd8C0D0E56',
       '0xBF7E42e9254A5E64D946bD206120ae5BafaC7781',
-      ' ',
     ];
     const repeats = 2;
     const delay = 20 * 60;
