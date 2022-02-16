@@ -47,7 +47,7 @@ const Timer: VFC<ITimer> = ({ seconds, setSeconds, amount }) => {
       <span className={s.timer}>
         {generateTime(seconds)}
         {seconds >= singleDay ? (
-          <span className={s.minuts}>{seconds / singleDay >= 2 ? 'days' : 'day'}</span>
+          <span className={s.minuts}>{seconds / singleDay >= 1 ? 'days' : 'day'}</span>
         ) : (
           <>
             <span className={s.hours}>hours</span>
