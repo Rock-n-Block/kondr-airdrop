@@ -22,7 +22,7 @@ const Collect: VFC = () => {
   const collectData = useMemo(() => {
     const minimal = [...freeze].sort((f, sec) => +f.available_date - +sec.available_date)[0];
     logger(
-      'collect data',
+      'collect data array',
       freeze.filter((f) => f.available_date === minimal.available_date),
     );
     return freeze.filter((f) => f.available_date === minimal.available_date);
@@ -43,8 +43,11 @@ const Collect: VFC = () => {
   const onClaimClick = useCallback(() => {
     logger('collect data', {
       amount: collectData[0].amount,
+      timestamp: collectData[0].available_date,
       signature: collectData[0].signature,
     });
+    logger('current time', Date.now());
+    logger('is current time lower than collect data time', +collectData[0].available_date > Date.now());
     claimTokens(collectData[0].amount, collectData[0].available_date, collectData[0].signature);
   }, [claimTokens, collectData]);
 
