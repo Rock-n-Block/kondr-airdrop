@@ -22,6 +22,8 @@ declare global {
   }
 }
 
+const tokenLifeTime = 1000 * 60 * 60 * 24;
+
 const WalletConnectContext = createContext<IWalletContext>({} as IWalletContext);
 
 const Connect: FC = ({ children }) => {
@@ -29,7 +31,7 @@ const Connect: FC = ({ children }) => {
   const { setAddress, setBalance, setIsLoading, setIsOwner } = UserSlice.actions;
   const { address } = useTypedSelector((state) => state.UserReducer);
   const { setState } = StateSlice.actions;
-  const { setBaseFreeze, setFreeze, setComplete } = FreezeSlice.actions;
+  const { setBaseFreeze, setFreeze, setComplete, setPending } = FreezeSlice.actions;
   const { openModal, closeAll } = useModals();
 
   const { getOwner, getActualBalanceOf } = useContractContext();
@@ -56,7 +58,14 @@ const Connect: FC = ({ children }) => {
       if ('address' in res) {
         let baseFreeze;
         const isOwn = await getOwner(res.address);
-        if (!localStorage.getItem('kondr_token') && isOwn) {
+        const RawTokenData = localStorage.getItem('kondr_token');
+        const tokenData = RawTokenData ? JSON.parse(RawTokenData) : null;
+        if (
+          typeof tokenData === 'string' ||
+          !tokenData ||
+          !tokenData.lifetime ||
+          new Date(tokenData.lifetime).getTime() < Date.now()
+        ) {
           const msg = await userApi.getMsg();
           const signedMsg = await provider.current.signMsg(res.address, msg.data);
           logger('login', {
@@ -70,7 +79,13 @@ const Connect: FC = ({ children }) => {
             signedMsg,
           });
           if (login.data.key) {
-            localStorage.setItem('kondr_token', login.data.key);
+            localStorage.setItem(
+              'kondr_token',
+              JSON.stringify({
+                token: login.data.key,
+                lifetime: Date.now() + tokenLifeTime,
+              }),
+            );
           }
         }
         if (isOwn) {
@@ -84,6 +99,11 @@ const Connect: FC = ({ children }) => {
               })),
             ),
           );
+          if (baseFreeze?.data.length > 0) {
+            dispatch(setState(3));
+          } else {
+            dispatch(setState(1));
+          }
         }
         const balance = isOwn
           ? await provider.current.getBalance(res.address)
@@ -91,21 +111,23 @@ const Connect: FC = ({ children }) => {
         dispatch(setAddress(res.address));
         dispatch(setBalance(balance.toString()));
         setLocalProviderName(providerName);
-        const userFreeze = await userApi.getData(res.address, 'waiting');
-        const userComplete = await userApi.getData(res.address, 'confirmed');
-        dispatch(setFreeze(userFreeze.data));
-        dispatch(setComplete(userComplete.data));
-        if (!isOwn && userFreeze.data.length === 0) {
-          openModal({
-            type: 'error',
-            title: `Sorry but your address is not eligible for the airdrop. Please try using another address!`,
-            onClick: closeAll,
-          });
-          disconnect();
-        } else if (baseFreeze?.data.length > 0) {
-          dispatch(setState(3));
-        } else {
-          dispatch(setState(1));
+        if (!isOwn) {
+          const userFreeze = await userApi.getData(res.address, 'waiting');
+          const userComplete = await userApi.getData(res.address, 'confirmed');
+          const userPending = await userApi.getData(res.address, 'pending');
+          dispatch(setFreeze(userFreeze.data));
+          dispatch(setComplete(userComplete.data));
+          dispatch(setPending(userPending.data));
+          if (userFreeze.data.length === 0) {
+            openModal({
+              type: 'error',
+              title: `Sorry but your address is not eligible for the airdrop. Please try using another address!`,
+              onClick: closeAll,
+            });
+            disconnect();
+          } else {
+            dispatch(setState(1));
+          }
         }
       }
     },
@@ -123,7 +145,14 @@ const Connect: FC = ({ children }) => {
               ContractService.resetWeb3(WalletService.Web3());
               await getUserData(providerName);
               const callbacks: IEventSubscriberCallbacks = {
-                success: [{ accountsChanged: () => getUserData(providerName) }],
+                success: [
+                  {
+                    accountsChanged: () => {
+                      disconnect();
+                      getUserData(providerName);
+                    },
+                  },
+                ],
               };
               provider.current.eventSubscribe(callbacks);
             } catch (err: any) {

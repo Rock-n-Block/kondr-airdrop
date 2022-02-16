@@ -11,6 +11,7 @@ import s from './styles.module.scss';
 interface IHistoryTable {
   complete: AirdropLine[];
   waiting: AirdropLine[];
+  pending: AirdropLine[];
   onClose: () => void;
 }
 
@@ -27,7 +28,7 @@ const getStatusIcon = (status: AirdropStatus) => {
   }
 };
 
-const HistoryTable: VFC<IHistoryTable> = ({ complete, waiting, onClose }) => {
+const HistoryTable: VFC<IHistoryTable> = ({ complete, waiting, pending, onClose }) => {
   return (
     <div className={s.historyTable}>
       <div className={s.historyTableContent}>
@@ -42,6 +43,17 @@ const HistoryTable: VFC<IHistoryTable> = ({ complete, waiting, onClose }) => {
             </tr>
           </thead>
           <tbody>
+            {pending.map((line) => {
+              return (
+                <tr key={line.idx} className={s.pending}>
+                  <td>
+                    {getStatusIcon('waiting')}{' '}
+                    {new Date(+line.date * 1000).toLocaleDateString().replaceAll('/', '.')}
+                  </td>
+                  <td>{line.amount}</td>
+                </tr>
+              );
+            })}
             {complete.map((line) => {
               return (
                 <tr key={line.idx}>
@@ -73,10 +85,10 @@ const HistoryTable: VFC<IHistoryTable> = ({ complete, waiting, onClose }) => {
 
 const AirdropHistory: VFC = () => {
   const [show, setShow] = useState(false);
-  const { complete, freeze } = useTypedSelector((state) => state.FreezeReducer);
+  const { complete, freeze, pending } = useTypedSelector((state) => state.FreezeReducer);
   return (
     <div className={s.wrapper}>
-      {freeze.length > 1 ? (
+      {freeze.length + complete.length + pending.length > 1 ? (
         <button type="button" onClick={() => setShow(!show)} className={s.date}>
           {new Date(+freeze[0].available_date * 1000)?.toLocaleDateString().replaceAll('/', '.')}{' '}
           <span className={`${s.arrow} ${show && s.rotate}`}>
@@ -90,9 +102,18 @@ const AirdropHistory: VFC = () => {
       )}
       {show && (
         <HistoryTable
-          complete={complete.map((c, k) => ({ idx: k, amount: c.amount, date: c.available_date }))}
+          pending={pending.map((c, k) => ({
+            idx: k,
+            amount: c.amount,
+            date: c.available_date,
+          }))}
+          complete={complete.map((c, k) => ({
+            idx: k + pending.length,
+            amount: c.amount,
+            date: c.available_date,
+          }))}
           waiting={freeze.map((c, k) => ({
-            idx: k + complete.length,
+            idx: k + complete.length + pending.length,
             amount: c.amount,
             date: c.available_date,
           }))}

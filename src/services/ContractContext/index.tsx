@@ -9,6 +9,7 @@ import { UserSlice } from 'store/reducers/user';
 import { contracts } from 'config';
 import { deNormalizedValue, logger, normalizedValue } from 'utils';
 
+import { userApi } from 'services/api';
 import ContractService from 'services/ContractService';
 import { useModals } from 'services/ModalsContext';
 import { IContractContext } from 'types';
@@ -181,6 +182,7 @@ const Contract: FC = ({ children }) => {
             title: `Great! You successfully received your tokens.`,
             onClick: closeAll,
           });
+          await userApi.sendStatus(deNormalizedValue(amount), timestamp, res.transactionHash);
           dispatch(setState(0));
           dispatch(setAddress(''));
           dispatch(setBalance('0'));

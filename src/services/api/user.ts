@@ -11,16 +11,17 @@ axios.defaults.baseURL = is_production
 
 axios.interceptors.request.use(
   (config) => {
+    const RawTokenData = localStorage.getItem('kondr_token');
+    const token = RawTokenData ? JSON.parse(RawTokenData) : null;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     config.headers.common = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       ...config.headers.common,
-      Authorization: `${
-        localStorage.getItem('kondr_token') ? `Token ${localStorage.getItem('kondr_token')}` : ''
-      }`,
+      Authorization: `${token ? `Token ${token.token}` : ''}`,
     };
+
     return config;
   },
   (error) => {
@@ -36,8 +37,8 @@ interface ILogin {
 }
 
 export default {
-  login: (data: ILogin) =>
-    axios.post('accounts/metamask_login/', {
+  login: (data: ILogin, type: 'post' | 'patch' = 'post') =>
+    axios[type]('accounts/metamask_login/', {
       address: data.address,
       signed_msg: data.signedMsg,
       msg: data.msg,
@@ -55,4 +56,10 @@ export default {
     axios.get(
       `users/?address=${address || ''}${status ? `&status=${status?.toUpperCase() || ''}` : ''}`,
     ),
+  sendStatus: (amount: string, date: number, tx_hash: string) =>
+    axios.post('status_update/', {
+      amount,
+      date,
+      tx_hash,
+    }),
 };

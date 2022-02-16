@@ -1,7 +1,7 @@
 import { TNullable } from 'types';
 
 export interface UserState {
-  address: TNullable<string>;
+  address: string;
   balance: string;
   isLoading: boolean;
   isOwner: boolean;
@@ -14,7 +14,7 @@ export type CSVLine = {
   idx: number;
 };
 
-export type AirdropStatus = 'confirmed' | 'waiting';
+export type AirdropStatus = 'confirmed' | 'waiting' | 'pending';
 
 export type AirdropLine = {
   date: string;
@@ -39,6 +39,7 @@ export type FreezeElement = {
 export interface FreezeState {
   freeze: FreezeElement[];
   complete: FreezeElement[];
+  pending: FreezeElement[];
   baseFreeze: TNullable<CSVLine[]>;
   collect: string;
   isLoading: boolean;

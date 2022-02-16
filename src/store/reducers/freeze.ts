@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CSVLine, FreezeElement, FreezeState } from 'types/store';
+
 import { normalizedValue } from 'utils';
 
 const initialState: FreezeState = {
   freeze: [],
   complete: [],
+  pending: [],
   baseFreeze: [],
   collect: '0',
   isLoading: false,
@@ -33,6 +35,12 @@ export const FreezeSlice = createSlice({
     },
     setComplete(state, action: PayloadAction<FreezeElement[]>) {
       state.complete = action.payload.map((f) => ({
+        ...f,
+        amount: normalizedValue(f.amount).toString(),
+      }));
+    },
+    setPending(state, action: PayloadAction<FreezeElement[]>) {
+      state.pending = action.payload.map((f) => ({
         ...f,
         amount: normalizedValue(f.amount).toString(),
       }));
