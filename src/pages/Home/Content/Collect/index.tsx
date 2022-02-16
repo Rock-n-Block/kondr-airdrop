@@ -47,29 +47,32 @@ const Collect: VFC = () => {
       signature: collectData[0].signature,
     });
     logger('current time', Date.now());
-    logger('is current time lower than collect data time', +collectData[0].available_date > Date.now());
+    logger(
+      'is current time lower than collect data time',
+      +collectData[0].available_date > Date.now(),
+    );
     claimTokens(collectData[0].amount, collectData[0].available_date, collectData[0].signature);
   }, [claimTokens, collectData]);
 
   const [seconds, setSeconds] = useState(
     +collectData[0].available_date - Date.now() / 1000 > 0
-      ? +collectData[0].available_date - Date.now() / 1000 + 30
+      ? +collectData[0].available_date - Date.now() / 1000 + 60
       : 0,
   );
 
   useEffect(() => {
     setSeconds(
       +collectData[0].available_date - Date.now() / 1000 > 0
-        ? +collectData[0].available_date - Date.now() / 1000
+        ? +collectData[0].available_date - Date.now() / 1000 + 60
         : 0,
     );
   }, [collectData]);
 
   useEffect(() => {
-    if(seconds === 0){
+    if (seconds === 0) {
       dispatch(setState(2));
     }
-  }, [dispatch, seconds, setState])
+  }, [dispatch, seconds, setState]);
 
   return (
     <div className={s.wrapper}>
