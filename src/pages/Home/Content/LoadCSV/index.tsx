@@ -255,7 +255,6 @@ const LoadCSV: VFC = () => {
     dispatch(setFile(new File([csvFile], 'sample.csv')));
     dispatch(setState(2));
   }, [dispatch, setFile, setState]);
-  console.log(loadingFreeze);
   return (
     <div className={s.wrapper}>
       <Button

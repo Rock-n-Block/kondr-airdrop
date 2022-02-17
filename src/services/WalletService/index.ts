@@ -105,7 +105,6 @@ class WalletService {
   public eventSubscribe(callbacks?: IEventSubscriberCallbacks): void {
     this.connectWallet.eventSubscriber().subscribe(
       (data: IEvent) => {
-        console.log(data);
         const successCallbacks = callbacks?.success;
         successCallbacks?.forEach((callback) => {
           if (callback[data.name]) {
