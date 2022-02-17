@@ -22,7 +22,7 @@ declare global {
   }
 }
 
-const tokenLifeTime = 1000 * 60 * 60 * 24;
+const tokenLifeTime = 1000 * 60 * 60 * 12;
 
 const WalletConnectContext = createContext<IWalletContext>({} as IWalletContext);
 

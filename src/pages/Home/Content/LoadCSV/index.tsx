@@ -29,7 +29,7 @@ const LoadCSV: VFC = () => {
   const dispatch = useTypedDispatch();
   const { setFiles, setFile, setIsLoading, setError } = FileSlice.actions;
   const { files, file, isLoading } = useTypedSelector((state) => state.FileReducer);
-  const { /* approveFreeze , */ getBalance, web3utils } = useContractContext();
+  const { approveFreeze, getBalance, web3utils } = useContractContext();
   const { openModal, closeAll } = useModals();
   const { balance } = useTypedSelector((state) => state.UserReducer);
   const { baseFreeze } = useTypedSelector((state) => state.FreezeReducer);
@@ -100,7 +100,7 @@ const LoadCSV: VFC = () => {
           if (CSVData.length > 0) {
             dispatch(setState(3));
             if (err.length > 0) {
-              openModal({ 
+              openModal({
                 type: 'error',
                 title:
                   'Some rows have been removed because of the incorrect data in one or several fields',
@@ -180,39 +180,56 @@ const LoadCSV: VFC = () => {
       const tokens = files.map((line) => line.amount);
       const freezeTime = files.map((line) => line.data.replace('\r', '')); */
       try {
-        const res = await userApi.sendData(files);
-        if (res.status === 201) {
-          openModal({
-            type: 'success',
-            title: `Your tokens have been successfully distributed`,
-            onClick: closeAll,
-          });
-          dispatch(setFile(null));
-          dispatch(setFiles([]));
-          const baseData = await userApi.getData();
-          dispatch(
-            setBaseFreeze(
-              baseData.data.map((d: any) => ({
-                address: d.address,
-                amount: d.amount,
-                data: d.available_date,
-              })),
-            ),
-          );
-        } else {
-          openModal({
-            type: 'error',
-            title: res.statusText,
-            onClick: closeAll,
-          });
-        }
+        const onSuccess = async () => {
+          const res = await userApi.sendData(files);
+          if (res.status === 201) {
+            openModal({
+              type: 'success',
+              title: `Vesting schedule has been successfully submitted`,
+              onClick: closeAll,
+            });
+            dispatch(setFile(null));
+            dispatch(setFiles([]));
+            const baseData = await userApi.getData();
+            dispatch(
+              setBaseFreeze(
+                baseData.data.map((d: any) => ({
+                  address: d.address,
+                  amount: d.amount,
+                  data: d.available_date,
+                })),
+              ),
+            );
+          } else {
+            openModal({
+              type: 'error',
+              title: res.statusText,
+              onClick: closeAll,
+            });
+          }
+        };
+        approveFreeze(
+          files.map((f) => f.amount),
+          onSuccess,
+        );
+
         // await approveFreeze(addresses, tokens, freezeTime);
       } catch {
         dispatch(setIsLoading(false));
       }
       setLoadingFreeze(false);
     }
-  }, [closeAll, dispatch, files, openModal, setBaseFreeze, setFile, setFiles, setIsLoading]);
+  }, [
+    approveFreeze,
+    closeAll,
+    dispatch,
+    files,
+    openModal,
+    setBaseFreeze,
+    setFile,
+    setFiles,
+    setIsLoading,
+  ]);
 
   const onProceed = useCallback(() => {
     ReadFile();
@@ -268,7 +285,7 @@ const LoadCSV: VFC = () => {
           onClick={state === 3 ? onApprove : onProceed}
           id="approve"
           type="button"
-          name={state === 3 ? 'Approve' : 'Proceed'}
+          name={state === 3 ? 'Upload' : 'Proceed'}
           theme="purple"
           disabled={
             state === 3 &&

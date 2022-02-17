@@ -1,7 +1,6 @@
 import { createContext, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useTypedDispatch, useTypedSelector } from 'store';
-import { FileSlice } from 'store/reducers/files';
 import { FreezeSlice } from 'store/reducers/freeze';
 import { StateSlice } from 'store/reducers/state';
 import { UserSlice } from 'store/reducers/user';
@@ -24,7 +23,6 @@ const Contract: FC = ({ children }) => {
   const { openModal, closeAll } = useModals();
 
   const { address } = useTypedSelector((state) => state.UserReducer);
-  const { setFile, setFiles } = FileSlice.actions;
   const { setIsLoading } = FreezeSlice.actions;
   const { setBalance, setIsOwner, setAddress } = UserSlice.actions;
   const { setState } = StateSlice.actions;
@@ -87,9 +85,8 @@ const Contract: FC = ({ children }) => {
     },
     [dispatch, setBalance, tokenContract.methods],
   );
-
   const approveFreeze = useCallback(
-    async (addresses: string[], tokens: string[], freezeTime: string[]) => {
+    async (tokens: string[], onSuccess: () => void) => {
       const amount = tokens.map((val) => +val).reduce((acc, val) => acc + val, 0);
       const checkAllowance = async function () {
         const allowanced = await tokenContract.methods
@@ -97,27 +94,17 @@ const Contract: FC = ({ children }) => {
           .call((allow: string) => normalizedValue(allow));
         logger('is allowance more than amount', +allowanced >= amount);
         if (+allowanced >= +deNormalizedValue(amount)) {
-          const normAddresses = addresses;
-          const normTokens = tokens.map((token: string) => deNormalizedValue(token));
-          const normFreeze = freezeTime;
-          const res = await airContract.methods
-            .multiFreezeToken(
-              contracts.params.TOKEN[contracts.type].address,
-              normAddresses,
-              normTokens,
-              normFreeze,
-              deNormalizedValue(amount),
-            )
+          const res = await tokenContract.methods
+            .transfer(contracts.params.AIRDROP[contracts.type].address, deNormalizedValue(amount))
             .send({ from: address });
-          if (Object.keys(res.events).length > 0) {
+          if (Object.keys(res.events).includes('Transfer')) {
+            onSuccess();
+          } else {
             openModal({
-              type: 'success',
-              title: `Your tokens have been successfully distributed`,
+              type: 'error',
+              title: `Something went wrong`,
               onClick: closeAll,
-            });
-            dispatch(setState(1));
-            dispatch(setFile(null));
-            dispatch(setFiles([]));
+            })
           }
         } else {
           const approved = await tokenContract.methods
@@ -130,17 +117,7 @@ const Contract: FC = ({ children }) => {
       };
       await checkAllowance();
     },
-    [
-      address,
-      airContract.methods,
-      closeAll,
-      dispatch,
-      openModal,
-      setFile,
-      setFiles,
-      setState,
-      tokenContract.methods,
-    ],
+    [address, closeAll, openModal, tokenContract.methods],
   );
 
   /* const getFreezeTokens = useCallback(
