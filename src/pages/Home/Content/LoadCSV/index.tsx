@@ -176,10 +176,8 @@ const LoadCSV: VFC = () => {
   const onApprove = useCallback(async () => {
     if (files) {
       setLoadingFreeze(true);
-      /* const addresses = files.map((line) => line.address);
-      const tokens = files.map((line) => line.amount);
-      const freezeTime = files.map((line) => line.data.replace('\r', '')); */
       try {
+        setLoadingFreeze(true);
         const onSuccess = async () => {
           const res = await userApi.sendData(files);
           if (res.status === 201) {
@@ -207,17 +205,16 @@ const LoadCSV: VFC = () => {
               onClick: closeAll,
             });
           }
+          setLoadingFreeze(false);
         };
-        approveFreeze(
+        await approveFreeze(
           files.map((f) => f.amount),
           onSuccess,
         );
-
-        // await approveFreeze(addresses, tokens, freezeTime);
       } catch {
         dispatch(setIsLoading(false));
+        setLoadingFreeze(false);
       }
-      setLoadingFreeze(false);
     }
   }, [
     approveFreeze,
@@ -258,7 +255,7 @@ const LoadCSV: VFC = () => {
     dispatch(setFile(new File([csvFile], 'sample.csv')));
     dispatch(setState(2));
   }, [dispatch, setFile, setState]);
-
+  console.log(loadingFreeze);
   return (
     <div className={s.wrapper}>
       <Button
