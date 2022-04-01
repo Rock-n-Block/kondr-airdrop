@@ -6,7 +6,7 @@ import { deNormalizedValue } from 'utils';
 import { AirdropStatus, CSVLine } from 'types';
 
 axios.defaults.baseURL = is_production
-  ? 'https://kon-vesting.rocknblock.io/api/v1'
+  ? 'https://claim.kondr.io/api/v1'
   : 'https://kon-vesting.rocknblock.io/api/v1';
 
 axios.interceptors.request.use(

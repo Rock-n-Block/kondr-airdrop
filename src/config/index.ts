@@ -2,7 +2,7 @@ import { chainsEnum, IChain, IConnectWallet, IContracts } from 'types';
 
 import { airdropAbi, tokenAbi } from './abi';
 
-export const is_production = false;
+export const is_production = true;
 
 export const chains: IChain = {
   [chainsEnum.Ethereum]: {
@@ -73,7 +73,7 @@ export const contracts: IContracts = {
   params: {
     AIRDROP: {
       mainnet: {
-        address: '0xE59004C4D160BF33acEe81DAdb00E1Db95DaF836',
+        address: '0xEAF65904831717ca08E979aE59712aE2c70872A4',
         abi: airdropAbi,
       },
       testnet: {

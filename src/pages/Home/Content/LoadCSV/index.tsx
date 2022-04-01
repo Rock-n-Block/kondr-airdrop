@@ -29,7 +29,7 @@ const LoadCSV: VFC = () => {
   const dispatch = useTypedDispatch();
   const { setFiles, setFile, setIsLoading, setError } = FileSlice.actions;
   const { files, file, isLoading } = useTypedSelector((state) => state.FileReducer);
-  const { approveFreeze, getBalance, web3utils } = useContractContext();
+  const { approveFreeze, getBalance } = useContractContext();
   const { openModal, closeAll } = useModals();
   const { balance } = useTypedSelector((state) => state.UserReducer);
   const { baseFreeze } = useTypedSelector((state) => state.FreezeReducer);
@@ -55,13 +55,12 @@ const LoadCSV: VFC = () => {
                 .replaceAll('"', '')
                 .replaceAll(';', ',')
                 .split(',');
-              if (address.length < 40 || !web3utils.checkAddressChecksum(address)) {
+              if (address.length < 40) {
                 err.push(`error address at line ${key + 1}\n${address}`);
                 return;
               }
               if (
                 Number.isNaN(parseInt(data, 10)) ||
-                new Date(parseInt(data, 10) * 1000).getTime() < Date.now() ||
                 Number.isNaN(new Date(parseInt(data, 10) * 1000))
               ) {
                 err.push(`error date at line ${key + 1}\n${data}`);
@@ -114,6 +113,7 @@ const LoadCSV: VFC = () => {
               onClick: closeAll,
             });
           }
+          console.log(err);
           dispatch(setError(err));
           dispatch(setFiles(CSVData));
           dispatch(setIsLoading(false));
@@ -123,18 +123,7 @@ const LoadCSV: VFC = () => {
       return true;
     }
     return false;
-  }, [
-    closeAll,
-    dispatch,
-    file,
-    getBalance,
-    openModal,
-    setError,
-    setFiles,
-    setIsLoading,
-    setState,
-    web3utils,
-  ]);
+  }, [closeAll, dispatch, file, getBalance, openModal, setError, setFiles, setIsLoading, setState]);
 
   const onFileLoad = useCallback(
     async (e: FormEvent<HTMLInputElement>) => {
